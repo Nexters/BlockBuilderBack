@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blockchain News</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="logo">BuilderForBlock</div>
+      <nav>
+        <ul>
+          <li>News</li>
+          <li>AI & Blockchain</li>
+          <li>Voting</li>
+          <li>Meetup</li>
+          <li>My Page</li>
+        </ul>
+      </nav>
+      <div class="user-actions">
+        <a href="#">Login</a> | <a href="#">Join Us</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="banner">
+        <div class="slider">
+          <button class="slider-btn left">◀</button>
+          <div class="slider-content">
+            <div id="banner-content">Fetching latest banner...</div>
+          </div>
+          <button class="slider-btn right">▶</button>
+        </div>
+      </section>
+
+      <section class="filter">
+        <h3>Filter</h3>
+        <select id="filter-news">
+          <option value="all">All</option>
+          <option value="ethereum">Ethereum</option>
+          <option value="solana">Solana</option>
+        </select>
+      </section>
+
+      <section class="news-list">
+        <h3>Latest News</h3>
+        <ul id="news-container">
+          Loading news...
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

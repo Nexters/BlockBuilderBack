@@ -1,0 +1,75 @@
+const pool = require("../config/database");
+
+const getFeedItems = () => {
+  return new Promise((resolve, reject) => {
+    pool.query("SELECT * FROM feed_items;", (error, results) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(results);
+    });
+  });
+};
+
+const getFeedSrcUrl = () => {
+  return new Promise((resolve, reject) => {
+    pool.query("SELECT url FROM feed_src_url;", (error, results) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(results);
+    });
+  });
+};
+
+const insertRssData = (data) => {
+  return new Promise((resolve, reject) => {
+    const maxLength = 500;
+    if (data.title.length > maxLength) {
+      data.title = data.title.substring(0, maxLength);
+    }
+
+    const query = `
+      INSERT INTO feed_items (
+        url,
+        title,
+        content_text,
+        date_published,
+        source_index,
+        network,
+        organization_code,
+        created_at,
+        updated_at,
+        source_url,
+        category_code
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+    `;
+
+    const values = [
+      data.url,
+      data.title,
+      data.content_text,
+      data.date_published,
+      data.source_index,
+      data.network,
+      data.organization_code,
+      data.created_at,
+      data.updated_at,
+      data.source_url,
+      data.category_code,
+    ];
+
+    pool.query(query, values, (error, results) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(results.insertId);
+    });
+  });
+};
+
+module.exports = {
+  getFeedItems,
+  getFeedSrcUrl,
+  insertRssData,
+};
