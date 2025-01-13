@@ -2,12 +2,15 @@ const pool = require("../config/database");
 
 const getFeedItems = () => {
   return new Promise((resolve, reject) => {
-    pool.query("SELECT * FROM feed_items;", (error, results) => {
-      if (error) {
-        return reject(error);
+    pool.query(
+      "SELECT * FROM feed_items where network = 02 or network = 01 order by id desc limit 5;",
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
       }
-      resolve(results);
-    });
+    );
   });
 };
 
@@ -19,6 +22,62 @@ const getFeedSrcUrl = () => {
       }
       resolve(results);
     });
+  });
+};
+
+const getSolanaUrl = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM feed_items where network = 02 order by id desc limit 5;",
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      }
+    );
+  });
+};
+
+const getEthUrl = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM feed_items where network = 01 order by id desc limit 5;",
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      }
+    );
+  });
+};
+
+const getMeeupUrl = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM feed_items where network = 00 order by id desc limit 5;",
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      }
+    );
+  });
+};
+
+const getHackathonUrl = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT * FROM feed_items where network = 00 and organization_code = 05 order by id desc limit 5;",
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      }
+    );
   });
 };
 
@@ -72,4 +131,8 @@ module.exports = {
   getFeedItems,
   getFeedSrcUrl,
   insertRssData,
+  getSolanaUrl,
+  getEthUrl,
+  getMeeupUrl,
+  getHackathonUrl,
 };

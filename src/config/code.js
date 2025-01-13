@@ -1,11 +1,11 @@
-const CategoryCode = Object.freeze({
+export const CategoryCode = Object.freeze({
   TWITTER: "01",
   DISCORD: "02",
   TELEGRAM: "03",
   BLOG: "04",
 });
 
-const NetworkCode = Object.freeze({
+export const NetworkCode = Object.freeze({
   ETHEREUM: "01",
   SOLANA: "02",
   SUI: "03",
@@ -16,11 +16,13 @@ const NetworkCode = Object.freeze({
   OPTIMISM: "08",
   ARBITRUM: "09",
   AVALANCHE: "10",
+  ETC: "00",
 });
 
-const OrganizationCode = Object.freeze({
+export const OrganizationCode = Object.freeze({
   FOUNDATION: "01",
   DAPP_COMPANY: "02",
   NEWS_COMPANY: "03",
   ETC: "04",
+  HACKATHON: "05",
 });

@@ -1,54 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blockchain News</title>
+    <title>BBA(BlockBuilderAgent)</title>
     <link rel="stylesheet" href="css/styles.css" />
+
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
     <script src="js/app.js" defer></script>
   </head>
   <body>
     <header>
-      <div class="logo">BuilderForBlock</div>
-      <nav>
-        <ul>
-          <li>News</li>
-          <li>AI & Blockchain</li>
-          <li>Voting</li>
-          <li>Meetup</li>
-          <li>My Page</li>
-        </ul>
-      </nav>
-      <div class="user-actions">
-        <a href="#">Login</a> | <a href="#">Join Us</a>
-      </div>
+      <div class="hamburger-menu" id="hamburger-btn">☰</div>
+      <h1>BBA (BlockBuilderAgent)</h1>
     </header>
 
-    <main>
-      <section class="banner">
-        <div class="slider">
-          <button class="slider-btn left">◀</button>
-          <div class="slider-content">
-            <div id="banner-content">Fetching latest banner...</div>
-          </div>
-          <button class="slider-btn right">▶</button>
+    <aside class="sidebar" id="sidebar">
+      <button class="tab-btn" data-tab="block-ai">Block Ai</button>
+      <button class="tab-btn" data-tab="meme-tx">Meme Tx</button>
+      <button class="tab-btn" data-tab="info">Info</button>
+    </aside>
+
+    <main id="main-content">
+      <section id="block-ai-section" class="tab-section">
+        <h2>Block Ai</h2>
+
+        <div class="question-block">
+          <h3>Blockchain Trend</h3>
+          <button class="preset-question">
+            블록체인 최신 트렌드가 요즘 뭐야?
+          </button>
+          <button class="preset-question">AI Agent 코인이 뭐야?</button>
+
+          <h3>Blockchain Dev</h3>
+          <button class="preset-question">
+            이더리움에서 NFT 컨트랙트 어떻게 만들어?
+          </button>
+          <button class="preset-question">
+            탈중앙화 거래소로 유명한 Dapp 코드 보여줘
+          </button>
+
+          <h3>스캠 판별</h3>
+          <button class="preset-question">시바이누는 스캠 아니야?</button>
+          <button class="preset-question">
+            http://test.tg 사이트 사기 아니야?
+          </button>
+        </div>
+
+        <div id="chat-log" class="chat-log"></div>
+        <div class="chat-input-area">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="아무거나 물어보세요..."
+          />
+          <button id="send-btn">질문하기</button>
         </div>
       </section>
 
-      <section class="filter">
-        <h3>Filter</h3>
-        <select id="filter-news">
-          <option value="all">All</option>
-          <option value="ethereum">Ethereum</option>
-          <option value="solana">Solana</option>
-        </select>
+      <section id="meme-tx-section" class="tab-section">
+        <h2>Meme Tx</h2>
+        <p>이곳에 밈 코인 트랜잭션 관련 UI/기능을 배치하세요.</p>
       </section>
 
-      <section class="news-list">
-        <h3>Latest News</h3>
-        <ul id="news-container">
-          Loading news...
-        </ul>
+      <section id="info-section" class="tab-section">
+        <h2>Info</h2>
+        <p>Info 탭에서는 밋업, 해커톤, 뉴스 관련된 정보를 보여줍니다.</p>
+
+        <div class="info-lists-container">
+          <div class="meetup-list">
+            <h3>밋업</h3>
+            <ul id="meetup-container">
+              Loading meetups...
+            </ul>
+          </div>
+
+          <div class="hackathon-list">
+            <h3>해커톤</h3>
+            <ul id="hackathon-container">
+              Loading hackathons...
+            </ul>
+          </div>
+
+          <div class="news-list">
+            <h3>뉴스</h3>
+            <ul id="news-container">
+              Loading news...
+            </ul>
+          </div>
+        </div>
       </section>
     </main>
   </body>

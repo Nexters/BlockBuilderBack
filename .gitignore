@@ -2,3 +2,4 @@ nodemodules
 .env
 ./nodemodules
 ./.env
+nodemodules/

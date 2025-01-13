@@ -5,7 +5,7 @@ const newsModal = require("../src/models/newsModel");
 function formatToMySQLDate(datetimeString) {
   const date = new Date(datetimeString);
   const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
   const dd = String(date.getDate()).padStart(2, "0");
   const hh = String(date.getHours()).padStart(2, "0");
   const mi = String(date.getMinutes()).padStart(2, "0");
@@ -33,8 +33,48 @@ const getFeedSrcUrlSvc = async () => {
   }
 };
 
+const getEthSrcUrlSvc = async () => {
+  try {
+    const data = await newsModal.getEthUrl();
+    console.log("data", data);
+    return data;
+  } catch (e) {
+    throw e;
+  }
+};
+
+const getSolanaSrcUrlSvc = async () => {
+  try {
+    const data = await newsModal.getSolanaUrl();
+    console.log("data", data);
+    return data;
+  } catch (e) {
+    throw e;
+  }
+};
+
+const getMeetupSrcUrlSvc = async () => {
+  try {
+    const data = await newsModal.getMeeupUrl();
+    console.log("data", data);
+    return data;
+  } catch (e) {
+    throw e;
+  }
+};
+
+const getHackathonSrcUrlSvc = async () => {
+  try {
+    const data = await newsModal.getHackathonUrl();
+    console.log("data", data);
+    return data;
+  } catch (e) {
+    throw e;
+  }
+};
+
 const scheduleDataFetching = async () => {
-  cron.schedule("*/10 * * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     try {
       let rssArr = await getFeedSrcUrlSvc();
       const rssUrls = rssArr.map((row) => row.url);
@@ -47,12 +87,18 @@ const scheduleDataFetching = async () => {
 
         const data = await response.json();
         let network, organization_code;
-        if (data.home_page_url == "https://x.com/ethereum") {
+        if (data.home_page_url == "https://x.com/Arbitrum_korea") {
           network = "01";
           organization_code = "01";
-        } else if (data.home_page_url == "https://x.com/SolanaFndn") {
-          network = "01";
-          organization_code = "02";
+        } else if (data.home_page_url == "https://x.com/SuperteamKorea") {
+          network = "02";
+          organization_code = "01";
+        } else if (data.home_page_url == "https://lu.ma/seoul") {
+          network = "00";
+          organization_code = "04";
+        } else if (data.home_page_url == "https://devfolio.co/hackathons") {
+          network = "00";
+          organization_code = "05";
         }
 
         const rssDataArray = data.items.map((item) => ({
@@ -89,4 +135,8 @@ const scheduleDataFetching = async () => {
 module.exports = {
   scheduleDataFetching,
   getFeedItemSvc,
+  getMeetupSrcUrlSvc,
+  getSolanaSrcUrlSvc,
+  getEthSrcUrlSvc,
+  getHackathonSrcUrlSvc,
 };

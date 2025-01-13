@@ -1,5 +1,5 @@
 const mysql = require("mysql");
-require("dotenv").config(); // 맨 위에 추가해 환경변수를 로드합니다.
+require("dotenv").config();
 
 const pool = mysql.createPool({
   connectionLimit: process.env.DB_CONN_LIMIT || 10,
