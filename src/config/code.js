@@ -1,11 +1,11 @@
-export const CategoryCode = Object.freeze({
+const CategoryCode = Object.freeze({
   TWITTER: "01",
   DISCORD: "02",
   TELEGRAM: "03",
   BLOG: "04",
 });
 
-export const NetworkCode = Object.freeze({
+const NetworkCode = Object.freeze({
   ETHEREUM: "01",
   SOLANA: "02",
   SUI: "03",
@@ -19,10 +19,12 @@ export const NetworkCode = Object.freeze({
   ETC: "00",
 });
 
-export const OrganizationCode = Object.freeze({
+const OrganizationCode = Object.freeze({
   FOUNDATION: "01",
   DAPP_COMPANY: "02",
   NEWS_COMPANY: "03",
-  ETC: "04",
+  MEETUP: "04",
   HACKATHON: "05",
 });
+
+module.exports = { CategoryCode, NetworkCode, OrganizationCode };

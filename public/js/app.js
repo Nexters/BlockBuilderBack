@@ -47,13 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // --------------------
   // 햄버거 버튼 클릭 => 사이드바 열고 닫기
   // --------------------
+
   const hamburgerBtn = document.getElementById("hamburger-btn");
   const sidebar = document.getElementById("sidebar");
-
+  const mainContent = document.getElementById("main-content");
   hamburgerBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("open"); // CSS에서 .open에 width: 200px 등
+    sidebar.classList.toggle("open"); // 사이드바 열기/닫기 토글
+    mainContent.classList.toggle("sidebar-open"); // 콘텐츠 반응형 클래스 추가/제거
   });
-
   // --------------------
   // 탭 버튼 클릭 => 섹션 전환
   // --------------------

@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const cron = require("node-cron");
 const newsModal = require("../src/models/newsModel");
+const code = require("../src/config/code");
 
 function formatToMySQLDate(datetimeString) {
   const date = new Date(datetimeString);
@@ -88,17 +89,17 @@ const scheduleDataFetching = async () => {
         const data = await response.json();
         let network, organization_code;
         if (data.home_page_url == "https://x.com/Arbitrum_korea") {
-          network = "01";
-          organization_code = "01";
+          network = code.NetworkCode.ETHEREUM;
+          organization_code = code.OrganizationCode.FOUNDATION;
         } else if (data.home_page_url == "https://x.com/SuperteamKorea") {
-          network = "02";
-          organization_code = "01";
+          network = code.NetworkCode.SOLANA;
+          organization_code = code.OrganizationCode.FOUNDATION;
         } else if (data.home_page_url == "https://lu.ma/seoul") {
-          network = "00";
-          organization_code = "04";
+          network = code.NetworkCode.ETC;
+          organization_code = code.OrganizationCode.MEETUP;
         } else if (data.home_page_url == "https://devfolio.co/hackathons") {
-          network = "00";
-          organization_code = "05";
+          network = code.NetworkCode.ETC;
+          organization_code = code.OrganizationCode.HACKATHON;
         }
 
         const rssDataArray = data.items.map((item) => ({
