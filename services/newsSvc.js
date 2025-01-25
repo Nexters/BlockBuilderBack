@@ -34,6 +34,16 @@ const getFeedSrcUrlSvc = async () => {
   }
 };
 
+const getCustomSrcUrlSvc = async () => {
+  try {
+    const data = await newsModal.getCustomSrcUrl();
+    console.log("data", data);
+    return data;
+  } catch (e) {
+    throw e;
+  }
+};
+
 const getEthSrcUrlSvc = async () => {
   try {
     const data = await newsModal.getEthUrl();
@@ -75,12 +85,13 @@ const getHackathonSrcUrlSvc = async () => {
 };
 
 const scheduleDataFetching = async () => {
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("* */23 * * *", async () => {
     try {
       let rssArr = await getFeedSrcUrlSvc();
       const rssUrls = rssArr.map((row) => row.url);
       for (let i = 0; i < rssUrls.length; i++) {
         console.log(rssUrls[i]);
+
         const response = await fetch(rssUrls[i]);
         if (!response.ok) {
           throw new Error(`Failed to fetch RSS data: ${response.statusText}`);
@@ -102,19 +113,45 @@ const scheduleDataFetching = async () => {
           organization_code = code.OrganizationCode.HACKATHON;
         }
 
-        const rssDataArray = data.items.map((item) => ({
-          url: item.url,
-          title: item.title,
-          content_text: item.content_text,
-          date_published: formatToMySQLDate(item.date_published),
-          source_index: item.id,
-          network: network,
-          organization_code: organization_code,
-          created_at: formatToMySQLDate(new Date().toISOString()),
-          updated_at: formatToMySQLDate(new Date().toISOString()),
-          source_url: item.url,
-          category_code: "1",
-        }));
+        let rssDataArray;
+        if (
+          rssUrls[i] == "https://devpost.com/api/hackathons?themes[]=Blockchain"
+        ) {
+          const currentTime = formatToMySQLDate(new Date());
+          rssDataArray = data.hackathons.map((item) => ({
+            url: item.url,
+            title: item.title,
+            content_text: item.title,
+            submission_period_dates: item.submission_period_dates,
+            img_url: item.thumbnail_url.startsWith("https://")
+              ? item.thumbnail_url
+              : `https:${item.thumbnail_url}`,
+            date_published: formatToMySQLDate(currentTime),
+            source_index: String(item.id),
+            network: code.NetworkCode.ETC,
+            organization_code: code.OrganizationCode.HACKATHON,
+            created_at: formatToMySQLDate(new Date().toISOString()),
+            updated_at: formatToMySQLDate(new Date().toISOString()),
+            source_url: item.url,
+            category_code: "05",
+          }));
+        } else {
+          rssDataArray = data.items.map((item) => ({
+            url: item.url,
+            title: item.title,
+            content_text: item.content_text,
+            img_url: item.image,
+            submission_period_dates: "submission_period_dates",
+            date_published: formatToMySQLDate(item.date_published),
+            source_index: item.id,
+            network: network,
+            organization_code: organization_code,
+            created_at: formatToMySQLDate(new Date().toISOString()),
+            updated_at: formatToMySQLDate(new Date().toISOString()),
+            source_url: item.url,
+            category_code: "1",
+          }));
+        }
 
         await Promise.all(
           rssDataArray.map(async (rssData) => {
@@ -140,4 +177,6 @@ module.exports = {
   getSolanaSrcUrlSvc,
   getEthSrcUrlSvc,
   getHackathonSrcUrlSvc,
+
+  getCustomSrcUrlSvc,
 };

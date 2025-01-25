@@ -3,6 +3,7 @@ const CategoryCode = Object.freeze({
   DISCORD: "02",
   TELEGRAM: "03",
   BLOG: "04",
+  HOMEPAGE: "05",
 });
 
 const NetworkCode = Object.freeze({

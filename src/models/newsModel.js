@@ -3,7 +3,7 @@ const pool = require("../config/database");
 const getFeedItems = () => {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM feed_items where network = 02 or network = 01 order by id desc limit 5;",
+      "SELECT * FROM feed_items where network = 02 or network = 01 order by id desc",
       (error, results) => {
         if (error) {
           return reject(error);
@@ -25,10 +25,24 @@ const getFeedSrcUrl = () => {
   });
 };
 
+const getCustomSrcUrl = () => {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      "SELECT url FROM feed_src_url where id = 5 ;",
+      (error, results) => {
+        if (error) {
+          return reject(error);
+        }
+        resolve(results);
+      }
+    );
+  });
+};
+
 const getSolanaUrl = () => {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM feed_items where network = 02 order by id desc limit 5;",
+      "SELECT * FROM feed_items where network = 02 order by id desc;",
       (error, results) => {
         if (error) {
           return reject(error);
@@ -42,7 +56,7 @@ const getSolanaUrl = () => {
 const getEthUrl = () => {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM feed_items where network = 01 order by id desc limit 5;",
+      "SELECT * FROM feed_items where network = 01 order by id desc;",
       (error, results) => {
         if (error) {
           return reject(error);
@@ -56,7 +70,7 @@ const getEthUrl = () => {
 const getMeeupUrl = () => {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM feed_items where network = 00 order by id desc limit 5;",
+      "SELECT * FROM feed_items where network = 00 order by id desc;",
       (error, results) => {
         if (error) {
           return reject(error);
@@ -70,7 +84,7 @@ const getMeeupUrl = () => {
 const getHackathonUrl = () => {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM feed_items where network = 00 and organization_code = 05 order by id desc limit 5;",
+      "SELECT * FROM feed_items where network = 00 and organization_code = 05 and submission_period_dates is not null order by id desc;",
       (error, results) => {
         if (error) {
           return reject(error);
@@ -93,6 +107,7 @@ const insertRssData = (data) => {
         url,
         title,
         content_text,
+        img_url,
         date_published,
         source_index,
         network,
@@ -100,14 +115,16 @@ const insertRssData = (data) => {
         created_at,
         updated_at,
         source_url,
-        category_code
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        category_code,
+        submission_period_dates
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
     const values = [
       data.url,
       data.title,
       data.content_text,
+      data.img_url,
       data.date_published,
       data.source_index,
       data.network,
@@ -116,6 +133,7 @@ const insertRssData = (data) => {
       data.updated_at,
       data.source_url,
       data.category_code,
+      data.submission_period_dates,
     ];
 
     pool.query(query, values, (error, results) => {
@@ -135,4 +153,5 @@ module.exports = {
   getEthUrl,
   getMeeupUrl,
   getHackathonUrl,
+  getCustomSrcUrl,
 };

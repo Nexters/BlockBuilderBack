@@ -1,5 +1,5 @@
 const OpenAI = require("openai");
-console.log("process.env.OPENAI_API_KEY", process.env.OPENAI_API_KEY);
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -11,7 +11,8 @@ const getChat = async (msg) => {
       messages: [
         {
           role: "system",
-          content: "You are a helpful blockchain assistant.",
+          content:
+            "You are a helpful blockchain assistant. Give me a response value in markdown",
         },
         { role: "user", content: msg },
       ],
