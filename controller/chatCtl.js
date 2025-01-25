@@ -1,4 +1,4 @@
-const chatService = require("../services/chatService");
+const chatService = require("../services/chatSvc");
 
 const postChat = async (req, res) => {
   try {

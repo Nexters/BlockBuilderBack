@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const port = 3000;
-const newSvc = require("./services/newsService");
+const newSvc = require("./services/newsSvc");
 
 app.use(express.static("public"));
 

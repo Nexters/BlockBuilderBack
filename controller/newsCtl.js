@@ -1,4 +1,4 @@
-const newsService = require("../services/newsService");
+const newsService = require("../services/newsSvc");
 
 const getNewsData = async (req, res) => {
   try {
