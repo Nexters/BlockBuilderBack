@@ -70,7 +70,7 @@ const getEthUrl = () => {
 const getMeeupUrl = () => {
   return new Promise((resolve, reject) => {
     pool.query(
-      "SELECT * FROM feed_items where network = 00 order by id desc;",
+      "SELECT * FROM feed_items where organization_code = 05 order by id desc;",
       (error, results) => {
         if (error) {
           return reject(error);

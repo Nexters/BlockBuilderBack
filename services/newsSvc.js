@@ -85,7 +85,7 @@ const getHackathonSrcUrlSvc = async () => {
 };
 
 const scheduleDataFetching = async () => {
-  cron.schedule("* */23 * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     try {
       let rssArr = await getFeedSrcUrlSvc();
       const rssUrls = rssArr.map((row) => row.url);
