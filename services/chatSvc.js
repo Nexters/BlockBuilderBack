@@ -11,8 +11,10 @@ const getChat = async (msg) => {
       messages: [
         {
           role: "system",
-          content:
-            "You are a helpful blockchain assistant. Give me a response value in markdown",
+          content: `"You are a useful blockchain helper. Give me the response value in markdown, and output the data in the following format, separating the title and content of the response value 
+             title:
+             contents:
+            "`,
         },
         { role: "user", content: msg },
       ],

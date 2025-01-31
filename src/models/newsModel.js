@@ -1,16 +1,23 @@
 const pool = require("../config/database");
 
-const getFeedItems = () => {
+const getFeedItems = (page, size) => {
   return new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT * FROM feed_items where network = 02 or network = 01 order by id desc",
-      (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(results);
+    const limit = size; // 한 페이지당 가져올 개수
+    const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
+
+    const query = `
+      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = '02' OR network = '01') AS total
+      FROM feed_items
+      WHERE network = '02' OR network = '01'
+      ORDER BY id DESC
+      LIMIT ? OFFSET ?`;
+
+    pool.query(query, [limit, offset], (error, results) => {
+      if (error) {
+        return reject(error);
       }
-    );
+      resolve(results);
+    });
   });
 };
 
@@ -67,32 +74,59 @@ const getEthUrl = () => {
   });
 };
 
-const getMeeupUrl = () => {
+const getMeeupUrl = (page, size) => {
   return new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT * FROM feed_items where organization_code = 05 order by id desc;",
-      (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(results);
+    const limit = size; // 한 페이지당 가져올 개수
+    const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
+
+    console.log("limit", page, size);
+    const query = `
+      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE organization_code = '05' ) AS total
+      FROM feed_items
+      WHERE organization_code = '05'
+      ORDER BY id DESC
+      LIMIT ? OFFSET ?`;
+
+    pool.query(query, [limit, offset], (error, results) => {
+      if (error) {
+        console.log(error);
+        return reject(error);
       }
-    );
+      resolve(results);
+    });
   });
 };
 
-const getHackathonUrl = () => {
+const getHackathonUrl = (page, size) => {
   return new Promise((resolve, reject) => {
-    pool.query(
-      "SELECT * FROM feed_items where network = 00 and organization_code = 05 and submission_period_dates is not null order by id desc;",
-      (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(results);
+    const limit = size; // 한 페이지당 가져올 개수
+    const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
+
+    const query = `
+      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 and submission_period_dates is not null ) AS total
+      FROM feed_items
+      WHERE network = 00 and organization_code = 05 and submission_period_dates is not null
+      ORDER BY id DESC
+      LIMIT ? OFFSET ?`;
+
+    pool.query(query, [limit, offset], (error, results) => {
+      if (error) {
+        return reject(error);
       }
-    );
+      resolve(results);
+    });
   });
+  // return new Promise((resolve, reject) => {
+  //   pool.query(
+  //     "SELECT * FROM feed_items where network = 00 and organization_code = 05 and submission_period_dates is not null order by id desc;",
+  //     (error, results) => {
+  //       if (error) {
+  //         return reject(error);
+  //       }
+  //       resolve(results);
+  //     }
+  //   );
+  // });
 };
 
 const insertRssData = (data) => {

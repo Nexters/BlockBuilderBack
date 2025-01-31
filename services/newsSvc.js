@@ -14,11 +14,16 @@ function formatToMySQLDate(datetimeString) {
   return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
 }
 
-const getFeedItemSvc = async () => {
+const getFeedItemSvc = async (page, size) => {
   try {
-    const data = await newsModal.getFeedItems();
-    console.log("data", data);
-    return data;
+    const data = await newsModal.getFeedItems(page, size);
+    return {
+      data,
+      currentPage: page,
+      pageSize: size,
+      totalItems: data.length > 0 ? data[0].total : 0, // 전체 개수
+      totalPages: data.length > 0 ? Math.ceil(data[0].total / size) : 0,
+    };
   } catch (e) {
     throw e;
   }
@@ -64,21 +69,32 @@ const getSolanaSrcUrlSvc = async () => {
   }
 };
 
-const getMeetupSrcUrlSvc = async () => {
+const getMeetupSrcUrlSvc = async (page, size) => {
   try {
-    const data = await newsModal.getMeeupUrl();
-    console.log("data", data);
-    return data;
+    const data = await newsModal.getMeeupUrl(page, size);
+    return {
+      data,
+      currentPage: page,
+      pageSize: size,
+      totalItems: data.length > 0 ? data[0].total : 0, // 전체 개수
+      totalPages: data.length > 0 ? Math.ceil(data[0].total / size) : 0,
+    };
   } catch (e) {
     throw e;
   }
 };
 
-const getHackathonSrcUrlSvc = async () => {
+const getHackathonSrcUrlSvc = async (page, size) => {
   try {
-    const data = await newsModal.getHackathonUrl();
+    const data = await newsModal.getHackathonUrl(page, size);
     console.log("data", data);
-    return data;
+    return {
+      data,
+      currentPage: page,
+      pageSize: size,
+      totalItems: data.length > 0 ? data[0].total : 0, // 전체 개수
+      totalPages: data.length > 0 ? Math.ceil(data[0].total / size) : 0,
+    };
   } catch (e) {
     throw e;
   }

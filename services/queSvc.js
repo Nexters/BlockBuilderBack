@@ -9,6 +9,17 @@ const getQuestionSvc = async () => {
   }
 };
 
+const getQuestionLevSvc = async () => {
+  try {
+    const data = await queModal.getQuestionLevelData();
+    console.log("data", data);
+    return data;
+  } catch (e) {
+    throw e;
+  }
+};
+
 module.exports = {
   getQuestionSvc,
+  getQuestionLevSvc,
 };
