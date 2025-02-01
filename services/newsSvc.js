@@ -32,7 +32,7 @@ const getFeedItemSvc = async (page, size) => {
 const getFeedSrcUrlSvc = async () => {
   try {
     const data = await newsModal.getFeedSrcUrl();
-    console.log("data", data);
+
     return data;
   } catch (e) {
     throw e;
@@ -42,7 +42,7 @@ const getFeedSrcUrlSvc = async () => {
 const getCustomSrcUrlSvc = async () => {
   try {
     const data = await newsModal.getCustomSrcUrl();
-    console.log("data", data);
+
     return data;
   } catch (e) {
     throw e;
@@ -52,7 +52,7 @@ const getCustomSrcUrlSvc = async () => {
 const getEthSrcUrlSvc = async () => {
   try {
     const data = await newsModal.getEthUrl();
-    console.log("data", data);
+
     return data;
   } catch (e) {
     throw e;
@@ -62,7 +62,7 @@ const getEthSrcUrlSvc = async () => {
 const getSolanaSrcUrlSvc = async () => {
   try {
     const data = await newsModal.getSolanaUrl();
-    console.log("data", data);
+
     return data;
   } catch (e) {
     throw e;
@@ -87,7 +87,7 @@ const getMeetupSrcUrlSvc = async (page, size) => {
 const getHackathonSrcUrlSvc = async (page, size) => {
   try {
     const data = await newsModal.getHackathonUrl(page, size);
-    console.log("data", data);
+
     return {
       data,
       currentPage: page,
@@ -101,7 +101,7 @@ const getHackathonSrcUrlSvc = async (page, size) => {
 };
 
 const scheduleDataFetching = async () => {
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 0 * * *", async () => {
     try {
       let rssArr = await getFeedSrcUrlSvc();
       const rssUrls = rssArr.map((row) => row.url);
@@ -193,6 +193,5 @@ module.exports = {
   getSolanaSrcUrlSvc,
   getEthSrcUrlSvc,
   getHackathonSrcUrlSvc,
-
   getCustomSrcUrlSvc,
 };

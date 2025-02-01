@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 서버로부터 응답 받기
   socket.on("chat_response", (data) => {
-    console.log("서버 응답:", data);
     const div = document.createElement("div");
     div.textContent = data;
     chatLog.appendChild(div);

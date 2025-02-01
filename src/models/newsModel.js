@@ -79,7 +79,6 @@ const getMeeupUrl = (page, size) => {
     const limit = size; // 한 페이지당 가져올 개수
     const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
 
-    console.log("limit", page, size);
     const query = `
       SELECT *, (SELECT COUNT(*) FROM feed_items WHERE organization_code = '05' ) AS total
       FROM feed_items
@@ -99,8 +98,8 @@ const getMeeupUrl = (page, size) => {
 
 const getHackathonUrl = (page, size) => {
   return new Promise((resolve, reject) => {
-    const limit = size; // 한 페이지당 가져올 개수
-    const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
+    const limit = size;
+    const offset = (page - 1) * size;
 
     const query = `
       SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 and submission_period_dates is not null ) AS total
@@ -116,17 +115,6 @@ const getHackathonUrl = (page, size) => {
       resolve(results);
     });
   });
-  // return new Promise((resolve, reject) => {
-  //   pool.query(
-  //     "SELECT * FROM feed_items where network = 00 and organization_code = 05 and submission_period_dates is not null order by id desc;",
-  //     (error, results) => {
-  //       if (error) {
-  //         return reject(error);
-  //       }
-  //       resolve(results);
-  //     }
-  //   );
-  // });
 };
 
 const insertRssData = (data) => {

@@ -1,0 +1,26 @@
+[
+  {
+    "ethereum_address": "0xD683cC33361271d88d4d3870C3fC77A522129F81",
+    "encrypted_mnemonic": "6a8677427b9812bc31515d42889f1aeec8a5c82d2b86b147577810460db4754be7c1cab446bee201403a09b3873f4ccace3d2387f247579af9fb40cab549081b1173a2716e06eae74bfe921df3f05e058753764638643b4a0b58cd947a905194",
+    "iv": "d0a3c77b684c4d39dcddc7dcc2042b6e",
+    "nickname": "Relinquished1352",
+    "encrypted_private_key": "3944b655dfdf5bbc910cd9d39e401e954c437695c5d02553c9b5fffe6d5d7f51e1d26d0f2c2eebdc5742c901245e1cfd73b1a1f218091d9a176abfc47908b28b65defc16ee40f3adcc09b05dd6b52c16",
+    "iv_private_key": "1d87531775a68f9542e0e7cb4cda853a"
+  },
+  {
+    "ethereum_address": "0x6e88e42A1bE09EbF0b31AAA7736fCF668B74576c",
+    "encrypted_mnemonic": "fb07a973ad0b899593ebd6e8b54cb0e4bbf53825f9d9b2739e83fc35b57c0ba72a4be6be77722571ca94887fd3f119b41b5c090e3c6ac6558978d14bc18ba576c4b3b39f488666fb0fb0712a7022c281",
+    "iv_mnemonic": "691aab5b33b71338bebd0774f0b1ae3f",
+    "encrypted_private_key": "9609fca8249d2d3b72dc97fac323ae695f7fe2e9b5ec5619ab012489f638dad9ad0c2271d295a9680d7c4a710f4c2e05bb5b0bedcdb0ba6001a0ec7f005c3d581b81e4d884b59e423b0fa8f7db28d01c",
+    "iv_private_key": "b41d2657970b3879f2b7cf7683a787ca",
+    "nickname": "Thor2886"
+  },
+  {
+    "ethereum_address": "0x8d6a9dCb916A4e9b9536B2B9d900Be359d1bC195",
+    "encrypted_mnemonic": "42d148381342e14bc868b88046b27175dd35fbc33ca2461631cc2b945a40015a73776db1fa4a7e4c4832a21e89ed43abed948ae8af85371801f08ede4ad7d1f34a1f5ef16010e912d47102cfacf4b147c41e21d85069e8d3a62d59f12284ba6d",
+    "iv_mnemonic": "07603ea487476af6cb9d1584a19251da",
+    "encrypted_private_key": "9bb4f87bb75dd53de79e4947f6cd441e997640a946d3658764f6d8c0e0f4e0ff9e9ac65dcbf60450b5f79da19bafc6bfc8b4bcedfa8b447a3c987f1aa56d30e567f5a0d03c97bff0fb48d2a43aa76753",
+    "iv_private_key": "6d83f3d21cf20553de85750ef418fbb8",
+    "nickname": "Meowth8642"
+  }
+]

@@ -33,7 +33,7 @@ const getMeetupData = async (req, res) => {
   try {
     let page = parseInt(req.query.page) || 1;
     let size = parseInt(req.query.size) || 20;
-    console.log(page, size);
+
     const data = await newsService.getMeetupSrcUrlSvc(page, size);
     res.json(data);
   } catch (error) {
