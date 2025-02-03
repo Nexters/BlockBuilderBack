@@ -80,9 +80,9 @@ const getMeeupUrl = (page, size) => {
     const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
 
     const query = `
-      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE organization_code = '05' ) AS total
+      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE organization_code = '04' ) AS total
       FROM feed_items
-      WHERE organization_code = '05'
+      WHERE organization_code = '04'
       ORDER BY id DESC
       LIMIT ? OFFSET ?`;
 
@@ -102,9 +102,9 @@ const getHackathonUrl = (page, size) => {
     const offset = (page - 1) * size;
 
     const query = `
-      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 and submission_period_dates is not null ) AS total
+      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 ) AS total
       FROM feed_items
-      WHERE network = 00 and organization_code = 05 and submission_period_dates is not null
+      WHERE network = 00 and organization_code = 05 
       ORDER BY id DESC
       LIMIT ? OFFSET ?`;
 
@@ -138,8 +138,11 @@ const insertRssData = (data) => {
         updated_at,
         source_url,
         category_code,
-        submission_period_dates
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        start_date,
+        end_date,
+        prize,
+        host
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
     const values = [
@@ -155,7 +158,10 @@ const insertRssData = (data) => {
       data.updated_at,
       data.source_url,
       data.category_code,
-      data.submission_period_dates,
+      data.start_date,
+      data.end_date,
+      data.prize,
+      data.host,
     ];
 
     pool.query(query, values, (error, results) => {

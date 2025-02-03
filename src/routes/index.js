@@ -8,10 +8,8 @@ const loginController = require("../../controller/loginCtl");
 
 //info
 router.get("/api/v1/info/news", newsController.getNewsData);
-router.get("/api/v1/info/eth", newsController.getEthData);
-router.get("/api/v1/info/sol", newsController.getSolData);
 router.get("/api/v1/info/meetup", newsController.getMeetupData);
-router.get("/api/v1/info/hackathon", newsController.getMeetupData);
+router.get("/api/v1/info/hackathon", newsController.getHackathonData);
 router.get("/api/v1/info/questions", queController.getQuestionCtl);
 router.get("/api/v1/info/level/questions", queController.getQuestionLevCtl);
 
