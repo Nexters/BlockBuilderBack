@@ -12,10 +12,7 @@ const RespGpt = async (msg) => {
     messages: [
       {
         role: "system",
-        content: `"You are a useful blockchain helper. Give me the response value in markdown, and output the data in the following format, separating the title and content of the response value 
-             title:
-             contents:
-            "`,
+        content: `"You are a useful blockchain helper. Only create response data in markdown format"`,
       },
       { role: "user", content: msg },
     ],
@@ -113,11 +110,9 @@ const postChatSvc = async (data) => {
       session_id = result[0].id;
       title = result[0].title;
     } else {
-      const { title: extractedTitle, contents: extractedContents } =
-        parseGptResponse(chatGptAnswer);
-
+      const extractedTitle = await summarizeText(chatGptAnswer);
+      console.log("extractedTitle", extractedTitle);
       sessResult = await chatModal.PostSess(eoa, extractedTitle);
-
       session_id = sessResult.insertId;
       title = extractedTitle;
     }
@@ -140,6 +135,22 @@ const postChatSvc = async (data) => {
   } catch (e) {
     throw e;
   }
+};
+
+const summarizeText = async (text) => {
+  const summaryResponse = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content: "Abbreviate the total string data to 10 characters or less",
+      },
+      { role: "user", content: text },
+    ],
+  });
+
+  console.log("summaryResponse", summaryResponse);
+  return summaryResponse.choices[0].message.content.trim();
 };
 
 const parseGptResponse = (responseText) => {
@@ -167,4 +178,5 @@ module.exports = {
   parseGptResponse,
   getChatSvc,
   ollmChatSvc,
+  summarizeText,
 };

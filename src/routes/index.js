@@ -5,7 +5,7 @@ const newsController = require("../../controller/newsCtl");
 const queController = require("../../controller/queCtl");
 const chatController = require("../../controller/chatCtl");
 const loginController = require("../../controller/loginCtl");
-const contractController = require("../../controller/contractCtl");
+const contractController = require("../../controller/caCtl");
 
 //info
 router.get("/api/v1/info/news", newsController.getNewsData);

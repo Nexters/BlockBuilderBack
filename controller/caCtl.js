@@ -2,6 +2,8 @@ require("dotenv").config();
 const { ethers } = require("ethers");
 const fs = require("fs");
 const path = require("path");
+const util = require("../util/util");
+const caSvc = require("../services/caSvc");
 
 const contractData = JSON.parse(
   fs.readFileSync(
@@ -9,13 +11,9 @@ const contractData = JSON.parse(
     "utf8"
   )
 );
-console.log(process.env.RPC_URL);
-console.log(process.env.PRIVATE_KEY);
-
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-// 기존에 배포된 컨트랙트를 process.env.CA에서 로드
 let contractInstance;
 if (process.env.CA) {
   contractInstance = new ethers.Contract(
@@ -28,7 +26,6 @@ if (process.env.CA) {
   console.error("⚠️ No contract address found in process.env.CA");
 }
 
-// 스마트 컨트랙트 배포 함수
 const deployContract = async (req, res) => {
   try {
     const factory = new ethers.ContractFactory(
@@ -36,13 +33,9 @@ const deployContract = async (req, res) => {
       contractData.data.bytecode,
       wallet
     );
-    console.log("factory", factory);
-    console.log("deploy2", wallet.address);
+
     const contract = await factory.deploy(wallet.address);
-    console.log("deploy3", contract);
     result = await contract.waitForDeployment();
-    ca = result.target;
-    console.log(result);
 
     res.json({
       result: result,
@@ -56,9 +49,9 @@ const deployContract = async (req, res) => {
 
 const createTopic = async (req, res) => {
   try {
-    const { eoa, question, option1, option2 } = req.body;
+    const { eoa, question, option_one, option_two, end_time } = req.body;
 
-    if (!eoa || !question || !option1 || !option2) {
+    if (!eoa || !question || !option_one || !option_two || !end_time) {
       return res.status(400).json({ error: "Missing required fields" });
     }
     if (!contractInstance) {
@@ -67,18 +60,18 @@ const createTopic = async (req, res) => {
         .json({ error: "Contract instance not initialized" });
     }
 
-    console.log("Sending transaction to create topic...");
+    const formattedEndTime = new Date(end_time)
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " ");
+
     const tx = await contractInstance.createTopic(
       eoa,
       question,
-      option1,
-      option2
+      option_one,
+      option_two
     );
-    const receipt = await tx.wait(); // 트랜잭션 확인
-
-    console.log("Transaction receipt:", receipt);
-
-    // 이벤트에서 topicNo 추출
+    const receipt = await tx.wait();
     const event = receipt.logs.find(
       (log) => log.fragment.name === "TopicCreated"
     );
@@ -87,20 +80,21 @@ const createTopic = async (req, res) => {
         .status(500)
         .json({ error: "TopicCreated event not found in receipt" });
     }
-    console.log("event", event);
 
+    console.log(event);
     const topicNo = Number(event.args[0]);
 
-    console.log("New Topic Created - TopicNo:", topicNo);
+    topic = util.MakeTopic(
+      question,
+      option_one,
+      option_two,
+      topicNo,
+      formattedEndTime
+    );
+    console.log("topic", topic);
+    caSvc.postTopic(topic);
 
-    const txResult = {
-      topicNo: topicNo,
-      to: receipt.to,
-      from: receipt.from,
-      txhash: receipt.hash,
-      scanlink: `https://sepolia.etherscan.io/tx/${receipt.hash}`,
-      result: receipt,
-    };
+    const txResult = await util.MakeTxResult(topicNo, receipt);
 
     res.json({
       message: "Topic created successfully",
@@ -125,10 +119,10 @@ const getTopic = async (req, res) => {
     res.json({
       topicNo: topic.topicNo.toString(),
       question: topic.question,
-      option1: topic.option1,
-      option2: topic.option2,
-      option1VoteCount: topic.option1VoteCount.toString(),
-      option2VoteCount: topic.option2VoteCount.toString(),
+      option_one: topic.option_one,
+      option_two: topic.option_two,
+      option_oneVoteCount: topic.option_oneVoteCount.toString(),
+      option_twoVoteCount: topic.option_twoVoteCount.toString(),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -162,8 +156,8 @@ const getVoteResult = async (req, res) => {
 
     const result = await contractInstance.getVoteResult(topicNo);
     res.json({
-      option1VoteCount: result[0].toString(),
-      option2VoteCount: result[1].toString(),
+      option_oneVoteCount: result[0].toString(),
+      option_twoVoteCount: result[1].toString(),
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
