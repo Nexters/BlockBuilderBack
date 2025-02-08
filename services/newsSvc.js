@@ -156,7 +156,7 @@ const getHckSvc = async (page, size) => {
 };
 
 const scheduleDataFetching = async () => {
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 0 * * *", async () => {
     try {
       let rssArr = await getSrcSvc();
       const rssUrls = rssArr.map((row) => row.url);

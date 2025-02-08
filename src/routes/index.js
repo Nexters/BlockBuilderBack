@@ -5,6 +5,7 @@ const newsController = require("../../controller/newsCtl");
 const queController = require("../../controller/queCtl");
 const chatController = require("../../controller/chatCtl");
 const loginController = require("../../controller/loginCtl");
+const contractController = require("../../controller/contractCtl");
 
 //info
 router.get("/api/v1/info/news", newsController.getNewsData);
@@ -20,7 +21,21 @@ router.get("/api/v1/wallet/me", loginController.generateEthereumIdentity);
 router.get("/api/v1/wallet/decrypt", loginController.getDecryptedMnemonic);
 
 //chat
+router.post("/api/v1/ollm/chat/", chatController.ollamaChat);
 router.post("/api/v1/agent/chat/", chatController.postChat);
 router.get("/api/v1/agent/chat/", chatController.getChat);
+
+router.post("/api/v1/ca/deploy", contractController.deployContract);
+router.post("/api/v1/ca/adm/vote", contractController.createTopic);
+router.get("/api/v1/ca/getTopic/:topicNo", contractController.getTopic);
+router.post("/api/v1/ca/user/vote", contractController.vote);
+router.get(
+  "/api/v1/ca/getVoteResult/:topicNo",
+  contractController.getVoteResult
+);
+router.get(
+  "/hasUserVoted/:topicNo/:userAddress",
+  contractController.hasUserVoted
+);
 
 module.exports = router;
