@@ -1,7 +1,6 @@
 const pool = require("../config/database");
 
 async function getQuestionData(connection) {
-  console.log(connection);
   const query = `
 	    WITH ranked_questions AS (
 	          SELECT 
@@ -21,7 +20,6 @@ async function getQuestionData(connection) {
 }
 
 async function getQuestionLevelData(connection) {
-  console.log(connection);
   const query = `
 	SELECT 
         q.level, 

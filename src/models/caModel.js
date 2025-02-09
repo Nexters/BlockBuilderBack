@@ -88,8 +88,7 @@ async function updateTopic(connection, data) {
           option_two_votes = IF(? = 2, option_two_votes + 1, option_two_votes)
     WHERE topic_no = ?;
   `;
-  console.log("connection", connection);
-  console.log("data", data);
+
   const values = [data.option, data.option, data.topic_no];
 
   const [result] = await connection.query(query, values);

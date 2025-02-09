@@ -34,7 +34,6 @@ const MakeTopic = async (
   topicNo,
   formattedEndTime
 ) => {
-  console.log("question", question);
   const topicResult = {
     question: question,
     option_one: option_one,

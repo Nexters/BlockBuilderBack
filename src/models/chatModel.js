@@ -1,7 +1,6 @@
 const pool = require("../config/database");
 
 async function GetChatSess(connection, data) {
-  console.log(connection);
   const query = `
         SELECT id, title FROM chat_sessions WHERE eoa = ? AND DATE(created_at) = CURRENT_DATE
       `;
@@ -11,7 +10,6 @@ async function GetChatSess(connection, data) {
 }
 
 async function GetUserSess(eoa, connection) {
-  console.log(connection);
   const query = `
     SELECT a.*, b.* FROM chat_sessions a INNER JOIN chat_messages b on a.id = b.session_id WHERE a.eoa = ? order by b.id desc 
     `;
@@ -21,7 +19,6 @@ async function GetUserSess(eoa, connection) {
 }
 
 async function PostSess(connection, eoa, title) {
-  console.log(connection);
   const query = `
         INSERT INTO buildblock.chat_sessions
         (eoa, title, created_at)
@@ -33,7 +30,6 @@ async function PostSess(connection, eoa, title) {
 }
 
 async function PostMsg(connection, data) {
-  console.log(connection);
   const query = `
    INSERT INTO buildblock.chat_messages
     ( session_id, sender, message, created_at)
