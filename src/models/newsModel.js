@@ -1,25 +1,20 @@
 const pool = require("../config/database");
 
-const getFeedItems = (page, size) => {
-  return new Promise((resolve, reject) => {
-    const limit = size; // 한 페이지당 가져올 개수
-    const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
+async function getFeedItems(connection, page, size) {
+  const limit = size; // 한 페이지당 가져올 개수
+  const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
 
-    const query = `
-      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = '02' OR network = '01') AS total
-      FROM feed_items
-      WHERE network = '02' OR network = '01'
-      ORDER BY id DESC
-      LIMIT ? OFFSET ?`;
+  const query = `
+        SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = '02' OR network = '01') AS total
+        FROM feed_items
+        WHERE network = '02' OR network = '01'
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?`;
 
-    pool.query(query, [limit, offset], (error, results) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(results);
-    });
-  });
-};
+  const values = [limit, offset];
+  const [result] = await connection.query(query, values);
+  return result;
+}
 
 const getFeedSrcUrl = () => {
   return new Promise((resolve, reject) => {
@@ -74,49 +69,37 @@ const getEthUrl = () => {
   });
 };
 
-const getMeeupUrl = (page, size) => {
-  return new Promise((resolve, reject) => {
-    const limit = size; // 한 페이지당 가져올 개수
-    const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
+async function getMeeupUrl(connection, page, size) {
+  const limit = size; // 한 페이지당 가져올 개수
+  const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
 
-    const query = `
+  const query = `
       SELECT *, (SELECT COUNT(*) FROM feed_items WHERE organization_code = '04' ) AS total
       FROM feed_items
       WHERE organization_code = '04'
       ORDER BY id DESC
       LIMIT ? OFFSET ?`;
 
-    pool.query(query, [limit, offset], (error, results) => {
-      if (error) {
-        console.log(error);
-        return reject(error);
-      }
-      resolve(results);
-    });
-  });
-};
+  const values = [limit, offset];
+  const [result] = await connection.query(query, values);
+  return result;
+}
 
-const getHackathonUrl = (page, size) => {
-  return new Promise((resolve, reject) => {
-    const limit = size;
-    const offset = (page - 1) * size;
+async function getHackathonUrl(connection, page, size) {
+  const limit = size; // 한 페이지당 가져올 개수
+  const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
 
-    const query = `
-      SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 ) AS total
-      FROM feed_items
-      WHERE network = 00 and organization_code = 05 
-      ORDER BY id DESC
-      LIMIT ? OFFSET ?`;
+  const query = `
+        SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 ) AS total
+        FROM feed_items
+        WHERE network = 00 and organization_code = 05
+        ORDER BY id DESC
+        LIMIT ? OFFSET ?`;
 
-    pool.query(query, [limit, offset], (error, results) => {
-      if (error) {
-        return reject(error);
-      }
-      resolve(results);
-    });
-  });
-};
-
+  const values = [limit, offset];
+  const [result] = await connection.query(query, values);
+  return result;
+}
 const insertRssData = (data) => {
   return new Promise((resolve, reject) => {
     const maxLength = 500;

@@ -51,7 +51,7 @@ const MakeToday = async () => {
   return today;
 };
 
-const ollmChatSvc = async (data) => {
+const ollmChatSvc = async (connection, data) => {
   try {
     const { eoa, msg } = data;
     const today = MakeToday();
@@ -59,7 +59,7 @@ const ollmChatSvc = async (data) => {
       eoa: eoa,
       today: today,
     };
-    result = await chatModal.GetChatSess(sessData);
+    result = await chatModal.GetChatSess(connection, sessData);
     const chatGptAnswer = await RespOllm(msg);
 
     if (result.length > 0) {
@@ -69,7 +69,7 @@ const ollmChatSvc = async (data) => {
       const { title: extractedTitle, contents: extractedContents } =
         parseGptResponse(chatGptAnswer);
 
-      sessResult = await chatModal.PostSess(eoa, extractedTitle);
+      sessResult = await chatModal.PostSess(connection, eoa, extractedTitle);
 
       session_id = sessResult.insertId;
       title = extractedTitle;
@@ -86,8 +86,8 @@ const ollmChatSvc = async (data) => {
       message: chatGptAnswer,
     };
 
-    await chatModal.PostMsg(userData);
-    await chatModal.PostMsg(gptData);
+    await chatModal.PostMsg(connection, userData);
+    await chatModal.PostMsg(connection, gptData);
 
     return chatGptAnswer;
   } catch (e) {
@@ -95,7 +95,7 @@ const ollmChatSvc = async (data) => {
   }
 };
 
-const postChatSvc = async (data) => {
+const postChatSvc = async (connection, data) => {
   try {
     const { eoa, msg } = data;
     const today = MakeToday();
@@ -103,7 +103,7 @@ const postChatSvc = async (data) => {
       eoa: eoa,
       today: today,
     };
-    result = await chatModal.GetChatSess(sessData);
+    result = await chatModal.GetChatSess(connection, sessData);
     const chatGptAnswer = await RespGpt(msg);
 
     if (result.length > 0) {
@@ -112,7 +112,7 @@ const postChatSvc = async (data) => {
     } else {
       const extractedTitle = await summarizeText(chatGptAnswer);
       console.log("extractedTitle", extractedTitle);
-      sessResult = await chatModal.PostSess(eoa, extractedTitle);
+      sessResult = await chatModal.PostSess(connection, eoa, extractedTitle);
       session_id = sessResult.insertId;
       title = extractedTitle;
     }
@@ -128,8 +128,8 @@ const postChatSvc = async (data) => {
       message: chatGptAnswer,
     };
 
-    await chatModal.PostMsg(userData);
-    await chatModal.PostMsg(gptData);
+    await chatModal.PostMsg(connection, userData);
+    await chatModal.PostMsg(connection, gptData);
 
     return chatGptAnswer;
   } catch (e) {
@@ -155,18 +155,19 @@ const summarizeText = async (text) => {
 
 const parseGptResponse = (responseText) => {
   const match = responseText.match(/title:\s*(.+)\ncontents:\s*([\s\S]*)/i);
+  console.log("match", match);
   if (match) {
     return {
       title: match[1].trim(), // "블록체인 기본 요약"
       contents: match[2].trim(), // "블록체인은 중앙 데이터베이스가 아닌..."
     };
   }
-  return { title: "제목 없음", contents: responseText }; // 기본값 설정
+  return { title: match[1].trim(), contents: responseText }; // 기본값 설정
 };
 
-const getChatSvc = async (eoa) => {
+const getChatSvc = async (eoa, connection) => {
   try {
-    sessResult = await chatModal.GetUserSess(eoa);
+    sessResult = await chatModal.GetUserSess(eoa, connection);
     return sessResult;
   } catch (e) {
     throw e;

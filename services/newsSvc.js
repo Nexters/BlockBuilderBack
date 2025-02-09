@@ -101,9 +101,9 @@ function frmtSqlDt(datetimeString) {
   return `${yyyy}.${mm}.${dd} ${hh}:${mi}:${ss}`;
 }
 
-const getItmSvc = async (page, size) => {
+const getItmSvc = async (connection, page, size) => {
   try {
-    const data = await newsModal.getFeedItems(page, size);
+    const data = await newsModal.getFeedItems(connection, page, size);
     return {
       data: await util.ExceptTotal(data),
       currentPage: page,
@@ -125,9 +125,9 @@ const getSrcSvc = async () => {
   }
 };
 
-const getMtpSvc = async (page, size) => {
+const getMtpSvc = async (connection, page, size) => {
   try {
-    const data = await newsModal.getMeeupUrl(page, size);
+    const data = await newsModal.getMeeupUrl(connection, page, size);
     return {
       data: await util.ExceptTotal(data),
       currentPage: page,
@@ -140,9 +140,9 @@ const getMtpSvc = async (page, size) => {
   }
 };
 
-const getHckSvc = async (page, size) => {
+const getHckSvc = async (connection, page, size) => {
   try {
-    const data = await newsModal.getHackathonUrl(page, size);
+    const data = await newsModal.getHackathonUrl(connection, page, size);
     return {
       data: await util.ExceptTotal(data),
       currentPage: page,

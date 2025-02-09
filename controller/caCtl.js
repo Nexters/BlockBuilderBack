@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const util = require("../util/util");
 const caSvc = require("../services/caSvc");
+const pool = require("../src/config/database");
 
 const contractData = JSON.parse(
   fs.readFileSync(
@@ -81,21 +82,22 @@ const createTopic = async (req, res) => {
         .json({ error: "TopicCreated event not found in receipt" });
     }
 
-    console.log(event);
     const topicNo = Number(event.args[0]);
-
-    topic = util.MakeTopic(
+    topic = await util.MakeTopic(
       question,
       option_one,
       option_two,
       topicNo,
       formattedEndTime
     );
-    console.log("topic", topic);
-    caSvc.postTopic(topic);
+
+    let connection;
+    connection = await pool.getConnection();
+    await caSvc.postTopic(connection, topic);
 
     const txResult = await util.MakeTxResult(topicNo, receipt);
 
+    console.log("txResult", txResult);
     res.json({
       message: "Topic created successfully",
       txResult: txResult,
@@ -106,7 +108,6 @@ const createTopic = async (req, res) => {
   }
 };
 
-// 특정 토픽 가져오기
 const getTopic = async (req, res) => {
   try {
     const { topicNo } = req.params;
@@ -131,18 +132,48 @@ const getTopic = async (req, res) => {
 
 // 투표 기능
 const vote = async (req, res) => {
+  const { eoa, topic_no, option } = req.body;
+  if (!eoa || topic_no === undefined || option === undefined) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  let connection;
   try {
-    const { userAddress, topicNo, option } = req.body;
-    if (!userAddress || topicNo === undefined || option === undefined) {
-      return res.status(400).json({ error: "Missing required fields" });
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    await caSvc.updateTopic(connection, req.body);
+
+    let txResult, receipt_link;
+    try {
+      const tx = await contractInstance.vote(eoa, topic_no, option);
+      txResult = await tx.wait();
+      receipt_link = `${process.env.SEPOLIA_ETH_SCAN}/${txResult.hash}`;
+    } catch (error) {
+      console.error("Blockchain TX Error:", error);
+      await connection.rollback();
+      return res.status(500).json({ error: "Blockchain transaction failed" });
     }
 
-    const tx = await contractInstance.vote(userAddress, topicNo, option);
-    await tx.wait();
+    const mkVote = {
+      topic_no,
+      eoa,
+      option,
+      receipt_link,
+    };
+    await caSvc.postVote(connection, mkVote);
+    await connection.commit();
 
-    res.json({ message: "Vote submitted successfully" });
+    return res.json({
+      message: "Vote submitted successfully",
+      txResult,
+      receipt_link,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (connection) await connection.rollback();
+    console.error("DB Transaction Error:", error);
+    return res.status(500).json({ error: "Database transaction failed" });
+  } finally {
+    if (connection) connection.release();
   }
 };
 
@@ -181,6 +212,30 @@ const hasUserVoted = async (req, res) => {
   }
 };
 
+// 투표 목록 조회
+const getTotalVote = async (req, res) => {
+  try {
+    const connection = await pool.getConnection();
+    const result = await caSvc.getTotalTopic(connection);
+    res.json(result.data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// 사용자가 특정 토픽에 투표했는지 확인
+const getUserVote = async (req, res) => {
+  try {
+    let eoa = req.query.eoa;
+    console.log("Eoa", eoa);
+    const connection = await pool.getConnection();
+    const result = await caSvc.getUserTopic(connection, eoa);
+    res.json(result.data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   deployContract,
   createTopic,
@@ -188,4 +243,6 @@ module.exports = {
   vote,
   getVoteResult,
   hasUserVoted,
+  getTotalVote,
+  getUserVote,
 };

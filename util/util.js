@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const ExceptTotal = async (data) => {
   const sanitizedData = await data.map(({ total, ...rest }) => rest);
   return sanitizedData;
@@ -9,8 +11,18 @@ const MakeTxResult = async (topicNo, receipt) => {
     to: receipt.to,
     from: receipt.from,
     txhash: receipt.hash,
-    scanlink: `https://sepolia.etherscan.io/tx/${receipt.hash}`,
+    scanlink: `${process.env.SEPOLIA_ETH_SCAN}/${receipt.hash}`,
     result: receipt,
+  };
+  return txResult;
+};
+
+const MakeVoteResult = async (eoa, topic_no, option, receipt_link) => {
+  const txResult = {
+    eoa: eoa,
+    topic_no: topic_no,
+    option: option,
+    receipt_link: receipt_link,
   };
   return txResult;
 };
@@ -19,18 +31,15 @@ const MakeTopic = async (
   question,
   option_one,
   option_two,
-  stat,
-  voter,
   topicNo,
   formattedEndTime
 ) => {
+  console.log("question", question);
   const topicResult = {
-    topicNo: topicNo,
     question: question,
     option_one: option_one,
     option_two: option_two,
-    stat: stat,
-    voter: voter,
+    topicNo: topicNo,
     formattedEndTime: formattedEndTime,
   };
   return topicResult;
@@ -40,4 +49,5 @@ module.exports = {
   ExceptTotal,
   MakeTxResult,
   MakeTopic,
+  MakeVoteResult,
 };

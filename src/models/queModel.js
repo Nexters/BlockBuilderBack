@@ -1,9 +1,8 @@
 const pool = require("../config/database");
 
-const getQuestionData = () => {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      `
+async function getQuestionData(connection) {
+  console.log(connection);
+  const query = `
 	    WITH ranked_questions AS (
 	          SELECT 
 	              q.id, q.category_id, q.level, q.question, c.name AS category_name,
@@ -15,22 +14,16 @@ const getQuestionData = () => {
       FROM ranked_questions
       WHERE rn <= 5
       ORDER BY category_id ASC, FIELD(level, 'beginner', 'intermediate', 'advanced');
-      `,
-      (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(results);
-      }
-    );
-  });
-};
+    `;
 
-const getQuestionLevelData = () => {
-  return new Promise((resolve, reject) => {
-    pool.query(
-      `
-	    	SELECT 
+  const [result] = await connection.query(query);
+  return result;
+}
+
+async function getQuestionLevelData(connection) {
+  console.log(connection);
+  const query = `
+	SELECT 
         q.level, 
         JSON_ARRAYAGG(
             JSON_OBJECT(
@@ -45,16 +38,11 @@ const getQuestionLevelData = () => {
         WHERE q.level IN ('beginner', 'intermediate', 'advanced')
         GROUP BY q.level
         ORDER BY FIELD(q.level, 'beginner', 'intermediate', 'advanced');
-      `,
-      (error, results) => {
-        if (error) {
-          return reject(error);
-        }
-        resolve(results);
-      }
-    );
-  });
-};
+    `;
+
+  const [result] = await connection.query(query);
+  return result;
+}
 
 module.exports = {
   getQuestionData,

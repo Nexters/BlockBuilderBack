@@ -3,6 +3,7 @@ const path = require("path");
 const ethers = require("ethers");
 const loginSvc = require("../services/loginSvc");
 const loginModal = require("../src/models/loginModel");
+const pool = require("../src/config/database");
 
 const SALT = process.env.SALT || "your_secret_salt"; // 보안을 위해 환경변수 사용 권장
 

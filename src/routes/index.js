@@ -25,10 +25,14 @@ router.post("/api/v1/ollm/chat/", chatController.ollamaChat);
 router.post("/api/v1/agent/chat/", chatController.postChat);
 router.get("/api/v1/agent/chat/", chatController.getChat);
 
+//vote
 router.post("/api/v1/ca/deploy", contractController.deployContract);
 router.post("/api/v1/ca/adm/vote", contractController.createTopic);
-router.get("/api/v1/ca/getTopic/:topicNo", contractController.getTopic);
 router.post("/api/v1/ca/user/vote", contractController.vote);
+router.get("/api/v1/ca/vote-all", contractController.getTotalVote);
+router.get("/api/v1/ca/user-vote", contractController.getUserVote);
+router.get("/api/v1/ca/topic/:topicNo", contractController.getTopic);
+
 router.get(
   "/api/v1/ca/getVoteResult/:topicNo",
   contractController.getVoteResult
