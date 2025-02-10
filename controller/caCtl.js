@@ -22,15 +22,20 @@ const nftCaData = JSON.parse(
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
+const baseProvider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
+const baseWallet = new ethers.Wallet(process.env.PRIVATE_KEY, baseProvider);
+
 let voteCa, nftCa;
 if (process.env.VOTECA) {
   voteCa = new ethers.Contract(process.env.VOTECA, voteCaData.abi, wallet);
   console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
-} else if (process.env.NFTCA) {
-  nftCa = new ethers.Contract(process.env.NFTCA, nftCaData.abi, wallet);
-  console.log(`Connected to existing contract at: ${process.env.NFTCA}`);
 } else {
   console.error("⚠️ No contract address found in process.env.VOTECA");
+}
+
+if (process.env.NFTCA) {
+  nftCa = new ethers.Contract(process.env.NFTCA, nftCaData.abi, baseWallet);
+  console.log(`Connected to existing contract at: ${process.env.NFTCA}`);
 }
 
 const deployVoteContract = async (req, res) => {
@@ -78,6 +83,7 @@ const deployNftContract = async (req, res) => {
 };
 
 const mintNft = async (req, res) => {
+  console.log("req", req.body);
   try {
     const { recipient, tokenUri } = req.body;
     console.log(recipient, tokenUri);
@@ -86,31 +92,46 @@ const mintNft = async (req, res) => {
         .status(400)
         .json({ error: "Recipient and tokenUri are required" });
     }
+
+    const nftCa = new ethers.Contract(
+      process.env.NFTCA,
+      nftCaData.abi,
+      baseWallet
+    );
     if (!nftCa) {
       return res
         .status(500)
         .json({ error: "NFT contract instance not initialized" });
     }
-
     // NFT 민팅 트랜잭션 실행
     const tx = await nftCa.safeMint(recipient, tokenUri);
-    const receipt = await tx.wait();
+    console.log("tx", tx);
 
-    const event = receipt.logs.find((log) => log.fragment.name === "Transfer");
+    const receipt = await tx.wait();
+    console.log("receipt", receipt);
+
+    const event = await receipt.logs.find(
+      (log) => log.fragment.name === "Transfer"
+    );
+    console.log("receipt.logs", receipt.logs);
+    console.log("receipt.logs", receipt.status, receipt.status == 1);
     if (!event) {
       return res
         .status(500)
         .json({ error: "Minting event not found in transaction receipt" });
     }
+    console.log("event", event);
 
     const tokenId = event.args.tokenId.toString();
     console.log(`✅ NFT Minted - Token ID: ${tokenId}`);
 
     res.json({
       message: "NFT Minted Successfully",
+      opensea: `https://testnets.opensea.io/assets/base_sepolia/0xf50036d01e12c011c6153e4b8228d650dfccb942/${tokenId}`,
+      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}/${receipt.hash}`,
       tokenId,
       transactionHash: receipt.hash,
-      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}/${receipt.hash}`,
+      nftCa: nftCa,
     });
   } catch (error) {
     console.error("Error minting NFT:", error);
