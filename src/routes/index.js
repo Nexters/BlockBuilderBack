@@ -8,7 +8,7 @@ const loginController = require("../../controller/loginCtl");
 const contractController = require("../../controller/caCtl");
 
 //home
-// router.get("/api/v1/home/meme", contractController.getNewsData);
+//router.get("/api/v1/nft/ca/deploy", contractController.deployNftContract);
 // router.get("/api/v1/info/meetup", contractController.getMeetupData);
 
 //info
@@ -30,7 +30,7 @@ router.post("/api/v1/agent/chat/", chatController.postChat);
 router.get("/api/v1/agent/chat/", chatController.getChat);
 
 //vote
-router.post("/api/v1/ca/deploy", contractController.deployContract);
+router.post("/api/v1/vote/ca/deploy", contractController.deployVoteContract);
 router.post("/api/v1/ca/adm/vote", contractController.createTopic);
 router.post("/api/v1/ca/user/vote", contractController.vote);
 router.get("/api/v1/ca/vote-all", contractController.getTotalVote);

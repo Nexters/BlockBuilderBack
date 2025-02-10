@@ -11,9 +11,9 @@ async function getFeedItems(connection, page, size) {
   //       ORDER BY id DESC
   //       LIMIT ? OFFSET ?`;
   const query = `
-        SELECT *, (SELECT COUNT(*) FROM feed_items WHERE  organization_code = '03') AS total
+        SELECT *, (SELECT COUNT(*) FROM feed_items WHERE  organization_code = '03' OR network = '02' OR network = '01' ) AS total
         FROM feed_items
-        WHERE  organization_code = '03'
+        WHERE  organization_code = '03' OR network = '02' OR network = '01'
         ORDER BY id DESC
         LIMIT ? OFFSET ?`;
 

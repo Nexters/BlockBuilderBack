@@ -6,7 +6,14 @@ const util = require("../util/util");
 const caSvc = require("../services/caSvc");
 const pool = require("../src/config/database");
 
-const contractData = JSON.parse(
+const voteCaData = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, "../contract/artifacts/VoteService.json"),
+    "utf8"
+  )
+);
+
+const nftCaData = JSON.parse(
   fs.readFileSync(
     path.join(__dirname, "../contract/artifacts/VoteService.json"),
     "utf8"
@@ -17,17 +24,41 @@ const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
 let voteCa;
 if (process.env.VOTECA) {
-  voteCa = new ethers.Contract(process.env.VOTECA, contractData.abi, wallet);
+  voteCa = new ethers.Contract(process.env.VOTECA, voteCaData.abi, wallet);
   console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
+} else if (process.env.NFTCA) {
+  // nftCa = new ethers.Contract(process.env.NFTCA, voteCaData.abi, wallet);
+  // console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
 } else {
   console.error("⚠️ No contract address found in process.env.VOTECA");
 }
 
-const deployContract = async (req, res) => {
+const deployVoteContract = async (req, res) => {
   try {
     const factory = new ethers.ContractFactory(
-      contractData.abi,
-      contractData.data.bytecode,
+      voteCaData.abi,
+      voteCaData.data.bytecode,
+      wallet
+    );
+
+    const contract = await factory.deploy(wallet.address);
+    result = await contract.waitForDeployment();
+
+    res.json({
+      result: result,
+      contractAddress: contract.address,
+      message: "Contract successfully deployed",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const deployNftContract = async (req, res) => {
+  try {
+    const factory = new ethers.ContractFactory(
+      voteCaData.abi,
+      voteCaData.data.bytecode,
       wallet
     );
 
@@ -226,7 +257,8 @@ const getUserVote = async (req, res) => {
 };
 
 module.exports = {
-  deployContract,
+  deployVoteContract,
+  deployNftContract,
   createTopic,
   getTopic,
   vote,
