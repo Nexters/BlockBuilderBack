@@ -15,16 +15,12 @@ const contractData = JSON.parse(
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-let contractInstance;
-if (process.env.CA) {
-  contractInstance = new ethers.Contract(
-    process.env.CA,
-    contractData.abi,
-    wallet
-  );
-  console.log(`Connected to existing contract at: ${process.env.CA}`);
+let voteCa;
+if (process.env.VOTECA) {
+  voteCa = new ethers.Contract(process.env.VOTECA, contractData.abi, wallet);
+  console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
 } else {
-  console.error("⚠️ No contract address found in process.env.CA");
+  console.error("⚠️ No contract address found in process.env.VOTECA");
 }
 
 const deployContract = async (req, res) => {
@@ -55,7 +51,7 @@ const createTopic = async (req, res) => {
     if (!eoa || !question || !option_one || !option_two || !end_time) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    if (!contractInstance) {
+    if (!voteCa) {
       return res
         .status(500)
         .json({ error: "Contract instance not initialized" });
@@ -66,12 +62,7 @@ const createTopic = async (req, res) => {
       .slice(0, 19)
       .replace("T", " ");
 
-    const tx = await contractInstance.createTopic(
-      eoa,
-      question,
-      option_one,
-      option_two
-    );
+    const tx = await voteCa.createTopic(eoa, question, option_one, option_two);
     const receipt = await tx.wait();
     const event = receipt.logs.find(
       (log) => log.fragment.name === "TopicCreated"
@@ -96,8 +87,6 @@ const createTopic = async (req, res) => {
     await caSvc.postTopic(connection, topic);
 
     const txResult = await util.MakeTxResult(topicNo, receipt);
-
-    console.log("txResult", txResult);
     res.json({
       message: "Topic created successfully",
       txResult: txResult,
@@ -115,7 +104,7 @@ const getTopic = async (req, res) => {
       return res.status(400).json({ error: "topicNo is required" });
     }
 
-    const topic = await contractInstance.getTopic(topicNo);
+    const topic = await voteCa.getTopic(topicNo);
 
     res.json({
       topicNo: topic.topicNo.toString(),
@@ -145,7 +134,7 @@ const vote = async (req, res) => {
 
     let txResult, receipt_link;
     try {
-      const tx = await contractInstance.vote(eoa, topic_no, option);
+      const tx = await voteCa.vote(eoa, topic_no, option);
       txResult = await tx.wait();
       receipt_link = `${process.env.SEPOLIA_ETH_SCAN}/${txResult.hash}`;
     } catch (error) {
@@ -185,7 +174,7 @@ const getVoteResult = async (req, res) => {
       return res.status(400).json({ error: "topicNo is required" });
     }
 
-    const result = await contractInstance.getVoteResult(topicNo);
+    const result = await voteCa.getVoteResult(topicNo);
     res.json({
       option_oneVoteCount: result[0].toString(),
       option_twoVoteCount: result[1].toString(),
@@ -205,7 +194,7 @@ const hasUserVoted = async (req, res) => {
         .json({ error: "topicNo and userAddress are required" });
     }
 
-    const voted = await contractInstance.hasUserVoted(topicNo, userAddress);
+    const voted = await voteCa.hasUserVoted(topicNo, userAddress);
     res.json({ hasVoted: voted });
   } catch (error) {
     res.status(500).json({ error: error.message });

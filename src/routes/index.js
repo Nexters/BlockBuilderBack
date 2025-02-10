@@ -7,6 +7,10 @@ const chatController = require("../../controller/chatCtl");
 const loginController = require("../../controller/loginCtl");
 const contractController = require("../../controller/caCtl");
 
+//home
+// router.get("/api/v1/home/meme", contractController.getNewsData);
+// router.get("/api/v1/info/meetup", contractController.getMeetupData);
+
 //info
 router.get("/api/v1/info/news", newsController.getNewsData);
 router.get("/api/v1/info/meetup", newsController.getMeetupData);

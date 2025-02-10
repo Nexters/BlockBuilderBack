@@ -1,7 +1,5 @@
-// services/dbService.js
 const pool = require("../config/database");
 
-// insertVote
 async function insertTopic(connection, data) {
   const query = `
     INSERT INTO buildblock.Topic

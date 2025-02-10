@@ -4,6 +4,7 @@ const newsModal = require("../src/models/newsModel");
 const code = require("../src/config/code");
 const cheerio = require("cheerio");
 const util = require("../util/util");
+const pool = require("../src/config/database");
 
 function parseSubmissionPeriodDates(input) {
   // 월 이름과 해당 월의 숫자를 매핑
@@ -118,7 +119,8 @@ const getItmSvc = async (connection, page, size) => {
 
 const getSrcSvc = async () => {
   try {
-    const data = await newsModal.getFeedSrcUrl();
+    connection = await pool.getConnection();
+    const data = await newsModal.getFeedSrcUrl(connection);
     return data;
   } catch (e) {
     throw e;
@@ -156,118 +158,137 @@ const getHckSvc = async (connection, page, size) => {
 };
 
 const scheduleDataFetching = async () => {
-  cron.schedule("0 0 * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     try {
       let rssArr = await getSrcSvc();
       const rssUrls = rssArr.map((row) => row.url);
       for (let i = 0; i < rssUrls.length; i++) {
-        console.log(rssUrls[i]);
+        try {
+          console.log(rssUrls[i]);
 
-        const response = await fetch(rssUrls[i]);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch RSS data: ${response.statusText}`);
+          const response = await fetch(rssUrls[i]);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch RSS data: ${response.statusText}`);
+            continue;
+          }
+
+          const data = await response.json();
+          let network, organization_code;
+          if (data.home_page_url == "https://x.com/Arbitrum_korea") {
+            network = code.NetworkCode.ETHEREUM;
+            organization_code = code.OrganizationCode.FOUNDATION;
+          } else if (data.home_page_url == "https://x.com/SuperteamKorea") {
+            network = code.NetworkCode.SOLANA;
+            organization_code = code.OrganizationCode.FOUNDATION;
+          } else if (data.home_page_url == "https://lu.ma/seoul") {
+            network = code.NetworkCode.ETC;
+            organization_code = code.OrganizationCode.MEETUP;
+          } else if (
+            data.home_page_url == "https://cointelegraph.com/tags/api"
+          ) {
+            console.log("Data", data);
+            network = code.NetworkCode.ETC;
+            organization_code = code.OrganizationCode.NEWS_COMPANY;
+          }
+
+          let rssDataArray;
+          //해커톤
+          if (
+            rssUrls[i] ==
+            "https://devpost.com/api/hackathons?themes[]=Blockchain"
+          ) {
+            const currentTime = frmtSqlDt(new Date());
+            rssDataArray = data.hackathons.map((item) => ({
+              url: item.url,
+              title: item.title,
+              content_text: item.title,
+              start_date: parseSubmissionPeriodDates(
+                item.submission_period_dates
+              ).start,
+              end_date: parseSubmissionPeriodDates(item.submission_period_dates)
+                .end,
+              img_url: item.thumbnail_url.startsWith("https://")
+                ? item.thumbnail_url
+                : `https:${item.thumbnail_url}`,
+              date_published: frmtSqlDt(currentTime),
+              source_index: String(item.id),
+              network: code.NetworkCode.ETC,
+              //host:  주최, prize :
+              host: item.organization_name,
+              prize: parsePrizeAmount(item.prize_amount),
+              organization_code: code.OrganizationCode.HACKATHON,
+              created_at: frmtSqlDt(new Date().toISOString()),
+              updated_at: frmtSqlDt(new Date().toISOString()),
+              source_url: item.url,
+              category_code: "05",
+            }));
+          } else if (
+            rssUrls[i] ==
+            "https://api.lu.ma/discover/category/get-events?geo_latitude=37.55210&geo_longitude=126.95050&slug=crypto"
+          ) {
+            //밋업
+            const currentTime = frmtSqlDt(new Date());
+            rssDataArray = data.entries.map((item) => ({
+              url: "https://lu.ma/" + item.event.url,
+              title: item.event.name,
+              content_text: item.event.name,
+              start_date: convertToKST(item.event.start_at),
+              end_date: convertToKST(item.event.end_at),
+              img_url: item.event.cover_url,
+              date_published: frmtSqlDt(currentTime),
+              source_index: String(item.event.api_id),
+              network: code.NetworkCode.ETC,
+              //host:  주최, prize :
+              host: item.hosts[0].name || "",
+              prize: "",
+              organization_code: code.OrganizationCode.MEETUP,
+              created_at: frmtSqlDt(new Date().toISOString()),
+              updated_at: frmtSqlDt(new Date().toISOString()),
+              source_url: "https://api.lu.ma",
+              category_code: "05",
+            }));
+          } else {
+            //뉴스
+            rssDataArray = data.items.map((item) => ({
+              url: item.url,
+              title: item.title,
+              content_text: item.content_text,
+              img_url: item.image || "",
+              submission_period_dates: "submission_period_dates",
+              date_published: frmtSqlDt(item.date_published),
+              source_index: item.id,
+              network: network,
+              host: item.url || "",
+              prize: "",
+              organization_code: organization_code,
+              created_at: frmtSqlDt(new Date().toISOString()),
+              updated_at: frmtSqlDt(new Date().toISOString()),
+              start_date: frmtSqlDt(new Date().toISOString()),
+              end_date: frmtSqlDt(new Date().toISOString()),
+              source_url: item.url,
+              category_code: "1",
+            }));
+          }
+
+          await Promise.allSettled(
+            rssDataArray.map(async (rssData) => {
+              try {
+                const connection = await pool.getConnection();
+                const insertId = await newsModal.insertRssData(
+                  connection,
+                  rssData
+                );
+                console.log(`Inserted item with ID: ${insertId}`);
+                connection.release();
+              } catch (error) {
+                console.error(`Error inserting RSS item:`, error);
+              }
+            })
+          );
+        } catch (error) {
+          console.error(`Error fetching ${rssUrls[i]}:`, error);
+          continue; // 오류 발생 시 다음 RSS URL로 넘어감
         }
-
-        const data = await response.json();
-        let network, organization_code;
-        if (data.home_page_url == "https://x.com/Arbitrum_korea") {
-          network = code.NetworkCode.ETHEREUM;
-          organization_code = code.OrganizationCode.FOUNDATION;
-        } else if (data.home_page_url == "https://x.com/SuperteamKorea") {
-          network = code.NetworkCode.SOLANA;
-          organization_code = code.OrganizationCode.FOUNDATION;
-        } else if (data.home_page_url == "https://lu.ma/seoul") {
-          network = code.NetworkCode.ETC;
-          organization_code = code.OrganizationCode.MEETUP;
-        }
-
-        let rssDataArray;
-        //해커톤
-        if (
-          rssUrls[i] == "https://devpost.com/api/hackathons?themes[]=Blockchain"
-        ) {
-          const currentTime = frmtSqlDt(new Date());
-          rssDataArray = data.hackathons.map((item) => ({
-            url: item.url,
-            title: item.title,
-            content_text: item.title,
-            start_date: parseSubmissionPeriodDates(item.submission_period_dates)
-              .start,
-            end_date: parseSubmissionPeriodDates(item.submission_period_dates)
-              .end,
-            img_url: item.thumbnail_url.startsWith("https://")
-              ? item.thumbnail_url
-              : `https:${item.thumbnail_url}`,
-            date_published: frmtSqlDt(currentTime),
-            source_index: String(item.id),
-            network: code.NetworkCode.ETC,
-            //host:  주최, prize :
-            host: item.organization_name,
-            prize: parsePrizeAmount(item.prize_amount),
-            organization_code: code.OrganizationCode.HACKATHON,
-            created_at: frmtSqlDt(new Date().toISOString()),
-            updated_at: frmtSqlDt(new Date().toISOString()),
-            source_url: item.url,
-            category_code: "05",
-          }));
-        } else if (
-          rssUrls[i] ==
-          "https://api.lu.ma/discover/category/get-events?geo_latitude=37.55210&geo_longitude=126.95050&slug=crypto"
-        ) {
-          //밋업
-          const currentTime = frmtSqlDt(new Date());
-          rssDataArray = data.entries.map((item) => ({
-            url: "https://lu.ma/" + item.event.url,
-            title: item.event.name,
-            content_text: item.event.name,
-            start_date: convertToKST(item.event.start_at),
-            end_date: convertToKST(item.event.end_at),
-            img_url: item.event.cover_url,
-            date_published: frmtSqlDt(currentTime),
-            source_index: String(item.event.api_id),
-            network: code.NetworkCode.ETC,
-            //host:  주최, prize :
-            host: item.hosts[0].name || "",
-            prize: "",
-            organization_code: code.OrganizationCode.MEETUP,
-            created_at: frmtSqlDt(new Date().toISOString()),
-            updated_at: frmtSqlDt(new Date().toISOString()),
-            source_url: "https://api.lu.ma",
-            category_code: "05",
-          }));
-        } else {
-          //뉴스
-          rssDataArray = data.items.map((item) => ({
-            url: item.url,
-            title: item.title,
-            content_text: item.content_text,
-            img_url: item.image || "",
-            submission_period_dates: "submission_period_dates",
-            date_published: frmtSqlDt(item.date_published),
-            source_index: item.id,
-            network: network,
-            host: item.url || "",
-            prize: "",
-            organization_code: organization_code,
-            created_at: frmtSqlDt(new Date().toISOString()),
-            updated_at: frmtSqlDt(new Date().toISOString()),
-            start_date: frmtSqlDt(new Date().toISOString()),
-            end_date: frmtSqlDt(new Date().toISOString()),
-            source_url: item.url,
-            category_code: "1",
-          }));
-        }
-
-        await Promise.all(
-          rssDataArray.map(async (rssData) => {
-            try {
-              const insertId = await newsModal.insertRssData(rssData);
-              console.log(`Inserted item with ID: ${insertId}`);
-            } catch (error) {
-              console.error(`Error inserting RSS item:`, error);
-            }
-          })
-        );
       }
     } catch (error) {
       console.error("Error fetching and inserting peer_get_all:", error);

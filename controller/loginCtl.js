@@ -33,8 +33,9 @@ const generateEthereumIdentity = async (req, res) => {
       nickname: nickname,
     };
 
+    connection = await pool.getConnection();
     // DB 저장
-    loginModal.insertUser(identity);
+    loginModal.insertUser(connection, identity);
 
     // JSON 파일 저장
     const filePath = path.join(__dirname, "eth_wallets.json");
