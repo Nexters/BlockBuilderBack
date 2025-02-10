@@ -8,8 +8,8 @@ const loginController = require("../../controller/loginCtl");
 const contractController = require("../../controller/caCtl");
 
 //home
-//router.get("/api/v1/nft/ca/deploy", contractController.deployNftContract);
-// router.get("/api/v1/info/meetup", contractController.getMeetupData);
+router.post("/api/v1/nft/ca/deploy", contractController.deployNftContract);
+router.post("/api/v1/nft/ca/mint", contractController.mintNft);
 
 //info
 router.get("/api/v1/info/news", newsController.getNewsData);

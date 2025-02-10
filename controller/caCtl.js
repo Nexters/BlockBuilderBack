@@ -15,20 +15,20 @@ const voteCaData = JSON.parse(
 
 const nftCaData = JSON.parse(
   fs.readFileSync(
-    path.join(__dirname, "../contract/artifacts/VoteService.json"),
+    path.join(__dirname, "../contract/artifacts/BodoBlockNft.json"),
     "utf8"
   )
 );
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
-let voteCa;
+let voteCa, nftCa;
 if (process.env.VOTECA) {
   voteCa = new ethers.Contract(process.env.VOTECA, voteCaData.abi, wallet);
   console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
 } else if (process.env.NFTCA) {
-  // nftCa = new ethers.Contract(process.env.NFTCA, voteCaData.abi, wallet);
-  // console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
+  nftCa = new ethers.Contract(process.env.NFTCA, nftCaData.abi, wallet);
+  console.log(`Connected to existing contract at: ${process.env.NFTCA}`);
 } else {
   console.error("⚠️ No contract address found in process.env.VOTECA");
 }
@@ -57,10 +57,12 @@ const deployVoteContract = async (req, res) => {
 const deployNftContract = async (req, res) => {
   try {
     const factory = new ethers.ContractFactory(
-      voteCaData.abi,
-      voteCaData.data.bytecode,
+      nftCaData.abi,
+      nftCaData.data.bytecode,
       wallet
     );
+
+    console.log("nft", factory);
 
     const contract = await factory.deploy(wallet.address);
     result = await contract.waitForDeployment();
@@ -71,6 +73,47 @@ const deployNftContract = async (req, res) => {
       message: "Contract successfully deployed",
     });
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const mintNft = async (req, res) => {
+  try {
+    const { recipient, tokenUri } = req.body;
+    console.log(recipient, tokenUri);
+    if (!recipient || !tokenUri) {
+      return res
+        .status(400)
+        .json({ error: "Recipient and tokenUri are required" });
+    }
+    if (!nftCa) {
+      return res
+        .status(500)
+        .json({ error: "NFT contract instance not initialized" });
+    }
+
+    // NFT 민팅 트랜잭션 실행
+    const tx = await nftCa.safeMint(recipient, tokenUri);
+    const receipt = await tx.wait();
+
+    const event = receipt.logs.find((log) => log.fragment.name === "Transfer");
+    if (!event) {
+      return res
+        .status(500)
+        .json({ error: "Minting event not found in transaction receipt" });
+    }
+
+    const tokenId = event.args.tokenId.toString();
+    console.log(`✅ NFT Minted - Token ID: ${tokenId}`);
+
+    res.json({
+      message: "NFT Minted Successfully",
+      tokenId,
+      transactionHash: receipt.hash,
+      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}/${receipt.hash}`,
+    });
+  } catch (error) {
+    console.error("Error minting NFT:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -262,6 +305,7 @@ module.exports = {
   createTopic,
   getTopic,
   vote,
+  mintNft,
   getVoteResult,
   hasUserVoted,
   getTotalVote,

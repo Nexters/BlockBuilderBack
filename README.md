@@ -1,5 +1,13 @@
 # blockbuilder
 
+```
+nodejs
+solidity
+foundry
+sepolia ethereum
+base sepolia ethereum
+```
+
 # ollama model download
 
 ```
