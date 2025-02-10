@@ -4,10 +4,16 @@ async function getFeedItems(connection, page, size) {
   const limit = size; // 한 페이지당 가져올 개수
   const offset = (page - 1) * size; // 건너뛸 개수 (0부터 시작)
 
+  // const query = `
+  //       SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = '02' OR network = '01') AS total
+  //       FROM feed_items
+  //       WHERE network = '02' OR network = '01'
+  //       ORDER BY id DESC
+  //       LIMIT ? OFFSET ?`;
   const query = `
-        SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = '02' OR network = '01') AS total
+        SELECT *, (SELECT COUNT(*) FROM feed_items WHERE  organization_code = '03') AS total
         FROM feed_items
-        WHERE network = '02' OR network = '01'
+        WHERE  organization_code = '03'
         ORDER BY id DESC
         LIMIT ? OFFSET ?`;
 

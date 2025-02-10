@@ -183,10 +183,21 @@ const scheduleDataFetching = async () => {
           } else if (data.home_page_url == "https://lu.ma/seoul") {
             network = code.NetworkCode.ETC;
             organization_code = code.OrganizationCode.MEETUP;
+          } else if (data.home_page_url == "https://kr.cointelegraph.com/rss") {
+            network = code.NetworkCode.ETC;
+            organization_code = code.OrganizationCode.NEWS_COMPANY;
+          } else if (data.home_page_url == "https://blockchain.news/RSS/") {
+            network = code.NetworkCode.ETC;
+            organization_code = code.OrganizationCode.NEWS_COMPANY;
           } else if (
-            data.home_page_url == "https://cointelegraph.com/tags/api"
+            data.home_page_url ==
+            "https://www.coindesk.com/arc/outboundfeeds/rss"
           ) {
-            console.log("Data", data);
+            network = code.NetworkCode.ETC;
+            organization_code = code.OrganizationCode.NEWS_COMPANY;
+          } else if (
+            data.home_page_url == "https://bitcoinmagazine.com/.rss/full/"
+          ) {
             network = code.NetworkCode.ETC;
             organization_code = code.OrganizationCode.NEWS_COMPANY;
           }
