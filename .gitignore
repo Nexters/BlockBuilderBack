@@ -11,3 +11,4 @@ node_modules/
 ./controller/eth_wallets.json
 ./controller/*.json
 controller/eth_wallets.json
+uploads/
