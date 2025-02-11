@@ -59,6 +59,7 @@ const ollmChatSvc = async (connection, data) => {
       eoa: eoa,
       today: today,
     };
+    await connection.beginTransaction();
     result = await chatModal.GetChatSess(connection, sessData);
     const chatGptAnswer = await RespOllm(msg);
 
@@ -88,9 +89,10 @@ const ollmChatSvc = async (connection, data) => {
 
     await chatModal.PostMsg(connection, userData);
     await chatModal.PostMsg(connection, gptData);
-
+    await connection.commit();
     return chatGptAnswer;
   } catch (e) {
+    await connection.rollback();
     throw e;
   }
 };
@@ -103,6 +105,7 @@ const postChatSvc = async (connection, data) => {
       eoa: eoa,
       today: today,
     };
+    await connection.beginTransaction();
     result = await chatModal.GetChatSess(connection, sessData);
     const chatGptAnswer = await RespGpt(msg);
 
@@ -130,9 +133,10 @@ const postChatSvc = async (connection, data) => {
 
     await chatModal.PostMsg(connection, userData);
     await chatModal.PostMsg(connection, gptData);
-
+    await connection.commit();
     return chatGptAnswer;
   } catch (e) {
+    await connection.rollback();
     throw e;
   }
 };

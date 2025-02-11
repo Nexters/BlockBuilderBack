@@ -158,7 +158,8 @@ const getHckSvc = async (connection, page, size) => {
 };
 
 const scheduleDataFetching = async () => {
-  cron.schedule("59 23 * * *", async () => {
+  // cron.schedule("59 23 * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     try {
       let rssArr = await getSrcSvc();
       const rssUrls = rssArr.map((row) => row.url);
@@ -283,16 +284,21 @@ const scheduleDataFetching = async () => {
 
           await Promise.allSettled(
             rssDataArray.map(async (rssData) => {
+              let connection;
               try {
-                const connection = await pool.getConnection();
+                connection = await pool.getConnection();
+                await connection.beginTransaction();
                 const insertId = await newsModal.insertRssData(
                   connection,
                   rssData
                 );
                 console.log(`Inserted item with ID: ${insertId}`);
-                connection.release();
+                await connection.commit();
               } catch (error) {
                 console.error(`Error inserting RSS item:`, error);
+                if (connection) await connection.rollback();
+              } finally {
+                if (connection) connection.release();
               }
             })
           );

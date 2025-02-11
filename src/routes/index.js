@@ -35,15 +35,5 @@ router.post("/api/v1/ca/adm/vote", contractController.createTopic);
 router.post("/api/v1/ca/user/vote", contractController.vote);
 router.get("/api/v1/ca/vote-all", contractController.getTotalVote);
 router.get("/api/v1/ca/user-vote", contractController.getUserVote);
-router.get("/api/v1/ca/topic/:topicNo", contractController.getTopic);
-
-router.get(
-  "/api/v1/ca/getVoteResult/:topicNo",
-  contractController.getVoteResult
-);
-router.get(
-  "/hasUserVoted/:topicNo/:userAddress",
-  contractController.hasUserVoted
-);
 
 module.exports = router;

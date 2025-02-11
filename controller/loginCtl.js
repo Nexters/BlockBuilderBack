@@ -53,6 +53,8 @@ const generateEthereumIdentity = async (req, res) => {
   } catch (error) {
     console.error("Error generating Ethereum identity:", error);
     res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    if (connection) connection.release();
   }
 };
 
