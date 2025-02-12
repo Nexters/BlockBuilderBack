@@ -20,11 +20,10 @@ const fileToIpfsUploadService = async (fileData) => {
 const jsonToIpfsSvc = async (data) => {
   try {
     console.log("data", data);
-
     const ipfsUri = lib.ipfsFileUpload(data);
-    return shipPostData, ipfsUri;
+    return ipfsUri;
   } catch (e) {
-    console.log("error", error);
+    console.log("e", e);
     throw e;
   }
 };

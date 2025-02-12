@@ -5,6 +5,7 @@ const path = require("path");
 const util = require("../util/util");
 const caSvc = require("../services/caSvc");
 const pool = require("../src/config/database");
+const lib = require("../util/lib");
 
 const voteCaData = JSON.parse(
   fs.readFileSync(
@@ -84,8 +85,8 @@ const deployNftContract = async (req, res) => {
 
 const mintNft = async (req, res) => {
   try {
-    const { recipient, tokenUri } = req.body;
-    if (!recipient || !tokenUri) {
+    const { recipient } = req.body;
+    if (!recipient) {
       return res
         .status(400)
         .json({ error: "Recipient and tokenUri are required" });
@@ -101,6 +102,8 @@ const mintNft = async (req, res) => {
         .status(500)
         .json({ error: "NFT contract instance not initialized" });
     }
+    const tokenUri = await lib.ranTokUri();
+    console.log("tokenUri", tokenUri);
 
     const tx = await nftCa.safeMint(recipient, tokenUri);
     const receipt = await tx.wait();
@@ -115,11 +118,15 @@ const mintNft = async (req, res) => {
     }
 
     const tokenId = event.args.tokenId.toString();
+    const ipfsImg = await lib.getImageFromUri(tokenUri);
+    const image_url = await lib.convertCid(ipfsImg);
 
     res.json({
       message: "NFT Minted Successfully",
+      tokenUri: tokenUri,
+      image_url: image_url,
       opensea: `https://testnets.opensea.io/assets/base_sepolia/0xf50036d01e12c011c6153e4b8228d650dfccb942/${tokenId}`,
-      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}/${receipt.hash}`,
+      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
       tokenId,
       transactionHash: receipt.hash,
       nftCa: nftCa,

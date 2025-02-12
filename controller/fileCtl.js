@@ -1,4 +1,5 @@
 const fileService = require("../services/fileService");
+const lib = require("../util/lib");
 
 const fileToIpfsUpload = async (req, res) => {
   try {
@@ -17,14 +18,39 @@ const fileToIpfsUpload = async (req, res) => {
 
 const jsonToIpfs = async (req, res) => {
   try {
-    IpfsUri = fileService.jsonToIpfs(req.body);
-    return IpfsUri;
+    console.log("req.body", req.body);
+    const nftMetadata = {
+      name: req.body.name,
+      image: req.body.image,
+      description: req.body.description,
+      attributes: req.body.attributes,
+    };
+
+    IpfsUri = await fileService.jsonToIpfsSvc(nftMetadata);
+    res.status(200).json(IpfsUri);
   } catch (e) {
     console.log("error", error);
     throw e;
   }
 };
+
+const convertIpfs = async (req, res) => {
+  try {
+    const IPFS_GATEWAY = process.env.IPFS_GATE_WAY;
+    const ipfsUrl = req.query.ipfsUrl;
+    if (!ipfsUrl || !ipfsUrl.startsWith("ipfs://")) {
+      return res.status(400).json({ error: "Valid IPFS URL is required" });
+    }
+    const resolvedUrl = lib.convertCid(ipfsUrl);
+    return res.json({ ipfsUrl: resolvedUrl });
+  } catch (e) {
+    console.log("error", error);
+    throw e;
+  }
+};
+
 module.exports = {
   fileToIpfsUpload,
   jsonToIpfs,
+  convertIpfs,
 };
