@@ -1,6 +1,19 @@
 const fileService = require("../services/fileService");
 const lib = require("../util/lib");
 
+const pinataUpload = async (req, res) => {
+  try {
+    console.log("tset");
+    const fileData = req.file;
+    const data = await fileService.fileToIpfsUploadPinataService(fileData);
+    console.log("data", data);
+    res.status(200).json(data);
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).send(error.message);
+  }
+};
+
 const fileToIpfsUpload = async (req, res) => {
   try {
     console.log("tset");
@@ -53,4 +66,5 @@ module.exports = {
   fileToIpfsUpload,
   jsonToIpfs,
   convertIpfs,
+  pinataUpload,
 };

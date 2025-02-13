@@ -26,6 +26,7 @@ const upload = multer({ storage });
 //home
 router.post("/api/v1/nft/ca/deploy", contractController.deployNftContract);
 router.post("/api/v1/nft/ca/mint-nft", contractController.mintNft);
+router.post("/api/v1/nft/ca/mint-ft", contractController.deployFTContract);
 
 //info
 router.get("/api/v1/info/news", newsController.getNewsData);
@@ -55,5 +56,10 @@ router.get("/api/v1/ca/user-vote", contractController.getUserVote);
 //ipfs
 router.post("/api/v1/json-to-ipfs", fileController.jsonToIpfs);
 router.post("/upload", upload.single("file"), fileController.fileToIpfsUpload);
+router.post(
+  "/upload/pinata",
+  upload.single("file"),
+  fileController.pinataUpload
+);
 router.get("/api/v1/image/ipfs", fileController.convertIpfs);
 module.exports = router;

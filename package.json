@@ -33,6 +33,7 @@
     "nodemon": "^3.1.0",
     "ollama": "^0.5.12",
     "openai": "^4.78.1",
+    "pinata-web3": "^0.5.4",
     "rss-parser": "^3.13.0",
     "socket.io": "^4.8.1",
     "twitter-api-v2": "^1.19.0"

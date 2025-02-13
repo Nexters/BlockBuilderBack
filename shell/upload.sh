@@ -8,7 +8,7 @@ SERVER_URL="http://localhost:3000/upload"
 
 # 1.png ~ 47.png 파일을 반복적으로 업로드
 #for i in {1..47}; do
-for i in {48..56}; do
+for i in {48..49}; do
     FILE_PATH="$UPLOAD_DIR/$i.png"
 
     # 파일이 존재하는지 확인

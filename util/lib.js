@@ -42,6 +42,10 @@ async function convertCid(ipfsUrl) {
 }
 
 async function ipfsFileUpload(metaData) {
+  if (!metaData) {
+    throw new Error("Invalid data provided to ipfsFileUpload");
+  }
+  console.log("metaData", metaData);
   metaData.image = await storage.resolveScheme(metaData.image);
   const uri = await storage.upload(metaData);
   console.info("uri", uri);

@@ -20,8 +20,13 @@ const nftCaData = JSON.parse(
     "utf8"
   )
 );
-// const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+const ftCaData = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, "../contract/artifacts/CustomFt.json"),
+    "utf8"
+  )
+);
 
 const baseProvider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
 const baseWallet = new ethers.Wallet(process.env.PRIVATE_KEY, baseProvider);
@@ -65,7 +70,7 @@ const deployNftContract = async (req, res) => {
     const factory = new ethers.ContractFactory(
       nftCaData.abi,
       nftCaData.data.bytecode,
-      wallet
+      baseWallet
     );
 
     console.log("nft", factory);
@@ -77,6 +82,49 @@ const deployNftContract = async (req, res) => {
       result: result,
       contractAddress: contract.address,
       message: "Contract successfully deployed",
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const deployFTContract = async (req, res) => {
+  try {
+    const factory = new ethers.ContractFactory(
+      ftCaData.abi,
+      ftCaData.data.bytecode,
+      baseWallet
+    );
+
+    const { recipient, image, name, symbol, amount } = req.body;
+
+    if (!recipient || !image || !name || !symbol || !amount) {
+      return res.status(400).json({
+        error: "Recipient, image, name, symbol, and amount are required",
+      });
+    }
+
+    console.log("ft", factory);
+
+    const contract = await factory.deploy(
+      baseWallet.address, // initialOwner
+      recipient, // 수령자 (토큰을 받을 주소)
+      image, // tokenUri (IPFS 이미지 URL)
+      name, // ERC-20 토큰 이름
+      symbol, // ERC-20 토큰 심볼
+      amount.toString() // 18자리 소수점 적용
+    );
+    result = await contract.waitForDeployment();
+
+    res.json({
+      message: "Contract successfully deployed",
+      receipt_link: `${process.env.SEPOLIA_ETH_SCAN_CA}${result.target}/?tab=logs`,
+      name: name,
+      symbol: symbol,
+      image: image,
+      amount: amount,
+      result: result,
+      contractAddress: contract.address,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -277,4 +325,5 @@ module.exports = {
   mintNft,
   getTotalVote,
   getUserVote,
+  deployFTContract,
 };
