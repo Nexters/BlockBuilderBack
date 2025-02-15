@@ -45,6 +45,7 @@ async function getVotesByEoa(connection, eoa) {
     SELECT
       v.id            AS vote_id,
       v.eoa           AS voter_address,
+      u.nickname      as voter_nickname,
       v.vote_option   AS vote_option,
       v.receipt_link  AS receipt_link,
       v.created_at    AS vote_time,
@@ -56,15 +57,43 @@ async function getVotesByEoa(connection, eoa) {
       t.option_two_votes AS option_two_votes,
       t.end_time      AS end_time
     FROM buildblock.Vote v
-    JOIN buildblock.Topic t
+    LEFT JOIN buildblock.Topic t
       ON v.topic_no = t.topic_no
-    WHERE v.eoa = ?
+    LEFT JOIN buildblock.user u
+      ON u.eoa = v.eoa
+    WHERE u.eoa = ?
     ORDER BY v.created_at DESC;
   `;
 
   const [rows] = await connection.query(query, [eoa]);
   return rows;
 }
+
+// async function getVotesByEoa(connection, eoa) {
+//   const query = `
+//       SELECT
+//       v.id            AS vote_id,
+//       v.eoa           AS voter_address,
+//       v.vote_option   AS vote_option,
+//       v.receipt_link  AS receipt_link,
+//       v.created_at    AS vote_time,
+//       t.id            AS topic_id,
+//       t.question      AS question,
+//       t.option_one    AS option_one,
+//       t.option_two    AS option_two,
+//       t.option_one_votes AS option_one_votes,
+//       t.option_two_votes AS option_two_votes,
+//       t.end_time      AS end_time
+//     FROM buildblock.Vote v
+//     JOIN buildblock.Topic t
+//       ON v.topic_no = t.topic_no
+//     WHERE v.eoa = ?
+//     ORDER BY v.created_at DESC;
+//   `;
+
+//   const [rows] = await connection.query(query, [eoa]);
+//   return rows;
+// }
 
 async function insertVote(connection, data) {
   const query = `

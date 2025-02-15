@@ -7,7 +7,7 @@ const chatController = require("../../controller/chatCtl");
 const loginController = require("../../controller/loginCtl");
 const contractController = require("../../controller/caCtl");
 const fileController = require("../../controller/fileCtl");
-//파일
+
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -20,8 +20,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-// const storage = multer.memoryStorage(); // 메모리에 저장
-// const upload = multer({ storage: storage });
 
 //home
 router.post("/api/v1/nft/ca/deploy", contractController.deployNftContract);
@@ -56,6 +54,8 @@ router.get("/api/v1/ca/vote-all", contractController.getTotalVote);
 router.get("/api/v1/ca/user-vote", contractController.getUserVote);
 
 //ipfs
+//jsonToIpfsPinata
+router.post("/api/v1/pinata/json-to-ipfs", fileController.jsonToIpfsPinata);
 router.post("/api/v1/json-to-ipfs", fileController.jsonToIpfs);
 router.post("/upload", upload.single("file"), fileController.fileToIpfsUpload);
 router.post(

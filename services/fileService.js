@@ -8,7 +8,17 @@ const pinata = new PinataSDK({
   pinataJwt: process.env.PINATA_JWT,
   pinataGateway: process.env.GATEWAY_URL,
 });
-
+const jsonToIpfsUploadPinataService = async (jsonData) => {
+  try {
+    console.log("Uploading JSON to IPFS via Pinata", jsonData);
+    const upload = await pinata.upload.json(jsonData);
+    const ipfsUri = `${process.env.GATEWAY_URL}/ipfs/${upload.IpfsHash}`;
+    return ipfsUri;
+  } catch (e) {
+    console.error("Error uploading JSON to IPFS", e);
+    throw e;
+  }
+};
 // 서비스 함수
 const fileToIpfsUploadPinataService = async (fileData) => {
   try {
@@ -56,4 +66,5 @@ module.exports = {
   fileToIpfsUploadService,
   fileToIpfsUploadPinataService,
   jsonToIpfsSvc,
+  jsonToIpfsUploadPinataService,
 };
