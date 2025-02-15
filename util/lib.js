@@ -80,9 +80,8 @@ async function ranTokUri() {
 }
 
 async function convertCid(ipfsUrl) {
-  const IPFS_GATEWAY = process.env.IPFS_GATE_WAY;
   const cidWithPath = ipfsUrl.replace("ipfs://", "");
-  const resolvedUrl = `${IPFS_GATEWAY}${cidWithPath}`;
+  const resolvedUrl = `${cidWithPath}`;
   return resolvedUrl;
 }
 

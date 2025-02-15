@@ -154,7 +154,7 @@ const mintNft = async (req, res) => {
     console.log("tokenUri", tokenUri);
 
     const tx = await nftCa.safeMint(recipient, tokenUri);
-    const receipt = await tx.wait();
+    const receipt = await tx.wait(2);
 
     const event = await receipt.logs.find(
       (log) => log.fragment.name === "Transfer"
