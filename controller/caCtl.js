@@ -261,7 +261,7 @@ const vote = async (req, res) => {
     }
 
     connection = await pool.getConnection();
-    await caSvc.updateTopic(connection, req.body);
+    await connection.beginTransaction();
 
     const tx = await voteCa.vote(eoa, topic_no, option);
     const receipt = await tx.wait();
@@ -273,13 +273,18 @@ const vote = async (req, res) => {
       option,
       receipt_link,
     };
+
+    await caSvc.updateTopic(connection, req.body);
     await caSvc.postVote(connection, mkVote);
+    await connection.commit();
     return res.json({
       message: "Vote submitted successfully",
       receipt,
       receipt_link,
     });
   } catch (error) {
+    console.log("error", error);
+    if (connection) await connection.rollback();
     console.error("DB Transaction Error:", error);
     return res.status(500).json({ error: "Database transaction failed" });
   } finally {
