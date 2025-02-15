@@ -15,7 +15,7 @@ const RespGpt = async (msg) => {
     messages: [
       {
         role: "system",
-        content: `"You are a useful blockchain helper. Only create response data in markdown format "`,
+        content: `"You are a useful blockchain helper. Only create response data in markdown format Respond in the language of the questioner"`,
       },
       { role: "user", content: msg },
     ],
@@ -54,7 +54,7 @@ const RespGemini = async (msg) => {
       throw new Error("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.");
     }
 
-    const prompt = `${msg}`;
+    const prompt = `"You are a useful blockchain helper. Only create response data in markdown format Respond in the language of the questioner" questioner: ${msg}`;
     const geminiAnswer =
       (await model.generateContent(prompt)) || "응답을 생성하지 못했습니다.";
 
