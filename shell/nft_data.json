@@ -1,0 +1,586 @@
+[
+  {
+    "name": "Bodoblock NFT #1",
+    "description": "A unique journalist-themed NFT from the Bodoblock collection.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafybeibhc4expnhfaegt5dod4x55brhbeyd26hr6is4g6km3vevqdsxtua",
+    "attributes": [
+      { "trait_type": "Category", "value": "Meme Art" },
+      { "trait_type": "Character", "value": "Pepe the Frog" },
+      { "trait_type": "Theme", "value": "Neon Cyberpunk" },
+      { "trait_type": "Edition", "value": "1/1" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #2",
+    "description": "A unique tile-based Pepe the Frog NFT.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreib3tvbg6m2gfbx545qeqjeo6j5lu55y5bf7rp3j5dyqnwlzhyfoiy",
+    "attributes": [
+      { "trait_type": "Category", "value": "Meme Art" },
+      { "trait_type": "Character", "value": "Pepe the Frog" },
+      { "trait_type": "Mood", "value": "Chill" },
+      { "trait_type": "Tile Count", "value": "9" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #3",
+    "description": "A playful, tongue-out Pepe NFT.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreicb3xnecay2qtv6vkkjmtbggw3utu5j6qr4krdvd3xk5ybkui3n7q",
+    "attributes": [
+      { "trait_type": "Category", "value": "Meme Art" },
+      { "trait_type": "Character", "value": "Pepe the Frog" },
+      { "trait_type": "Mood", "value": "Funny" },
+      { "trait_type": "Background", "value": "Colorful Burst" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #4",
+    "description": "A cool Pepe wearing pixel sunglasses.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidh757ifm3kvwm4ne4y3snusa5duee6t37ddhg2x6ydflgz76xquq",
+    "attributes": [
+      { "trait_type": "Category", "value": "Meme Art" },
+      { "trait_type": "Character", "value": "Pepe the Frog" },
+      { "trait_type": "Accessory", "value": "Pixel Glasses" },
+      { "trait_type": "Background", "value": "Yellow Graffiti" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #5",
+    "description": "A cute pixelated penguin with attitude.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidn5vzfybonoacw7nqqot73hchgf2gwp7frxfbz3aw5wy6yig6ema",
+    "attributes": [
+      { "trait_type": "Category", "value": "Animal Art" },
+      { "trait_type": "Character", "value": "Penguin" },
+      { "trait_type": "Accessory", "value": "Pixel Glasses" },
+      { "trait_type": "Mood", "value": "Excited" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #6",
+    "description": "A journalist cat covering the latest news in the NFT world.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreic7ephtdozy3r5at7w7wo2fyspu5jlgbh7zz7ag6o742v5bhsrc7u",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Cat" },
+      { "trait_type": "Accessory", "value": "News Hat & Glasses" },
+      { "trait_type": "Mood", "value": "Professional" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #7",
+    "description": "A dog reporter covering blockchain news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreigklan4zpicoqkasjlyeyht7myhio7owxzeocgbvq5tvktu752mpa",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Dog" },
+      { "trait_type": "Accessory", "value": "Press Badge & Suit" },
+      { "trait_type": "Mood", "value": "Serious" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #8",
+    "description": "A panda journalist capturing the latest NFT trends.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreicr2mcjk6h66b7ms5iblmttaiv4aiouqot2y6dfpdy3yjkm2hoftu",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Panda" },
+      { "trait_type": "Accessory", "value": "Camera & Microphone" },
+      { "trait_type": "Mood", "value": "Investigative" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #9",
+    "description": "A unique journalist-themed NFT from the Bodoblock collection.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiaebjx6phmlhqsrocsomobk5d4oy2gatgghzn4gle267vpvogi3v4",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Bear" },
+      { "trait_type": "Accessory", "value": "Hat & Glasses" },
+      { "trait_type": "Mood", "value": "Investigative" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #10",
+    "description": "A dog journalist reporting the latest NFT news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreifripriunjiewb5l27q7lenqonhc3yh4brzojanhjoffo5gvlzjiu",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Shiba Inu" },
+      { "trait_type": "Accessory", "value": "Suit & Tie" },
+      { "trait_type": "Mood", "value": "Professional" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #11",
+    "description": "A raccoon journalist covering the blockchain industry.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafybeigr5argszzztfoqbif2r557jjm74n6oe4dkef6wwhktpsyocaopsm",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Raccoon" },
+      { "trait_type": "Accessory", "value": "Hat & Microphone" },
+      { "trait_type": "Mood", "value": "Serious" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #12",
+    "description": "A penguin breaking news on blockchain updates.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidt3kzqenxjw2geccqj5vmbsmv7v45z7e7pkijb2mzi5gw5mra47y",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Penguin" },
+      { "trait_type": "Accessory", "value": "Typewriter & Hat" },
+      { "trait_type": "Mood", "value": "Energetic" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #13",
+    "description": "A rabbit journalist taking notes for the next big scoop.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiaa2lvi7y65u37lxe3g7ig6f7nh4ufhn2cp7yuurq2osw36j773pa",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Rabbit" },
+      { "trait_type": "Accessory", "value": "Pen & Paper" },
+      { "trait_type": "Mood", "value": "Focused" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #14",
+    "description": "A panda field reporter investigating the latest events.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreic54xv2osktc6cm2sjgkpxdxb4c7djrxeenx7c4me7gc5anmhoija",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Panda" },
+      { "trait_type": "Accessory", "value": "Headphones & Notebook" },
+      { "trait_type": "Mood", "value": "Curious" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #15",
+    "description": "A panda radio host bringing you the latest news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreif3xz4j7vrhfqn25ejfszm4r3dwurlagppggw6q46ktdg6b7eyyem",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Panda" },
+      { "trait_type": "Accessory", "value": "Headset & Microphone" },
+      { "trait_type": "Mood", "value": "Enthusiastic" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #16",
+    "description": "A fox journalist writing the latest crypto news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidxhcfbgx67fdrfsd4omltjrv3sjeyh7lkk7w7c5lwttlvigcuyq4",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Red Panda" },
+      { "trait_type": "Accessory", "value": "Pen & Paper" },
+      { "trait_type": "Mood", "value": "Determined" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #17",
+    "description": "A panda journalist reporting the latest news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidbhqhsd3s7x6psi7r6cholxvrvsqqw767u4dp7avdtlzckw7g53m",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Panda" },
+      { "trait_type": "Accessory", "value": "Newspaper & Microphone" },
+      { "trait_type": "Mood", "value": "Serious" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #18",
+    "description": "A panda journalist making announcements.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidbrtire4zarzvywsmbzjkvwammpkhcva6u33aburcrnygyv5beoi",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Panda" },
+      { "trait_type": "Accessory", "value": "Megaphone & Suit" },
+      { "trait_type": "Mood", "value": "Energetic" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #19",
+    "description": "A red panda journalist covering urban news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreieogb27f5id3zl5v45sifmx2iu476b52tws5ss44lehu6rqg5cppa",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Red Panda" },
+      { "trait_type": "Accessory", "value": "Vest & Tie" },
+      { "trait_type": "Mood", "value": "Curious" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #20",
+    "description": "A pigeon journalist reading breaking news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreialpkfvoeakqqh5erhicwkgds7cvpn7bwbrysbmluhc4tcwr57fsa",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Pigeon" },
+      { "trait_type": "Accessory", "value": "Headphones & Newspaper" },
+      { "trait_type": "Mood", "value": "Focused" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #21",
+    "description": "A panda journalist filming the latest events.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreieum3bgyfrcphbwr5iztx2kczy22m7n6bunyidlm3j7daetnld24e",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Panda" },
+      { "trait_type": "Accessory", "value": "Camera & Glasses" },
+      { "trait_type": "Mood", "value": "Investigative" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #22",
+    "description": "A fox news reporter delivering the latest updates.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreia2rkxpnvzfj7eboosa5ef6vduuhjl4bjnndc6qzrhr6v7bki5zum",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Fox" },
+      { "trait_type": "Accessory", "value": "Microphone & Suit" },
+      { "trait_type": "Mood", "value": "Professional" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #23",
+    "description": "A rabbit journalist covering an urban event.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreifufojdmqukfgmngvwvxjhanjhnocrsilkefzlk7bee5r2wt26e4e",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Rabbit" },
+      { "trait_type": "Accessory", "value": "Newspaper & Suit" },
+      { "trait_type": "Mood", "value": "Serious" }
+    ]
+  },
+  {
+    "name": "Bodoblock NFT #24",
+    "description": "A bird journalist reporting from the city streets.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidbmgwkfumo6ryyqd57evmbx2pakozp3c3afdpskyl4zf4dkehjjq",
+    "attributes": [
+      { "trait_type": "Category", "value": "Journalist" },
+      { "trait_type": "Character", "value": "Bird" },
+      { "trait_type": "Accessory", "value": "Notebook & Suit" },
+      { "trait_type": "Mood", "value": "Focused" }
+    ]
+  },
+  {
+    "name": "Breaking News Van",
+    "description": "A classic red and white news van with emergency lights, covering breaking news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreid5rr2gahbhizd2ljhrdcnzxbltqqcymlrdg5wqfoobc253miwimq",
+    "attributes": [
+      { "trait_type": "Type", "value": "Vehicle" },
+      { "trait_type": "Theme", "value": "Breaking News" },
+      { "trait_type": "Color", "value": "Red and White" }
+    ]
+  },
+  {
+    "name": "News Reporter Hamster",
+    "description": "A cute hamster in a news van, reporting live from the scene.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiaxvezuitqlr3bqypb7gkgom45i6tusuwecj2vgaej3yakihr636u",
+    "attributes": [
+      { "trait_type": "Type", "value": "Reporter" },
+      { "trait_type": "Animal", "value": "Hamster" },
+      { "trait_type": "Equipment", "value": "Helmet" }
+    ]
+  },
+  {
+    "name": "Sleek News Anchor Raccoon",
+    "description": "A stylish raccoon news anchor in a blue suit, delivering the latest headlines.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreihbjgstacpq7e34hefuzmaw4ktf3eclxprayikej6lizc7u37l5iu",
+    "attributes": [
+      { "trait_type": "Type", "value": "News Anchor" },
+      { "trait_type": "Animal", "value": "Raccoon" },
+      { "trait_type": "Outfit", "value": "Blue Suit" }
+    ]
+  },
+  {
+    "name": "Squirrel Journalist",
+    "description": "A determined squirrel journalist in goggles, typing out an urgent report.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreicbpgcokgn62xlvc4jylz4b34jt6jbe3oq7lup7pgonstwt4svafe",
+    "attributes": [
+      { "trait_type": "Type", "value": "Journalist" },
+      { "trait_type": "Animal", "value": "Squirrel" },
+      { "trait_type": "Equipment", "value": "Goggles" }
+    ]
+  },
+  {
+    "name": "Rabbit News Analyst",
+    "description": "A thoughtful rabbit reading the latest newspaper on the street.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreigrqg2zw6modlpdnsnzbhokuoxewvvbbsfyecfdwm67uu6kx4sduq",
+    "attributes": [
+      { "trait_type": "Type", "value": "Analyst" },
+      { "trait_type": "Animal", "value": "Rabbit" },
+      { "trait_type": "Accessory", "value": "Glasses & Headphones" }
+    ]
+  },
+  {
+    "name": "Cat Reporter",
+    "description": "A cat journalist in a blue suit and fedora, preparing a detailed report.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreif5v3tbvlqakggtabiyeogwzbhp424mchq7qrems7mrjrsne4gzv4",
+    "attributes": [
+      { "trait_type": "Type", "value": "Reporter" },
+      { "trait_type": "Animal", "value": "Cat" },
+      { "trait_type": "Outfit", "value": "Blue Suit & Hat" }
+    ]
+  },
+  {
+    "name": "Camera Crew Hamsters",
+    "description": "A dedicated hamster camera crew capturing the news live from the field.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreicvprrm3bmcvtfl4woejux3ibavsvrdkcihaap6nv5w7favcf7es4",
+    "attributes": [
+      { "trait_type": "Type", "value": "Camera Crew" },
+      { "trait_type": "Animal", "value": "Hamsters" },
+      { "trait_type": "Equipment", "value": "Camera" }
+    ]
+  },
+  {
+    "name": "Fox Journalist",
+    "description": "A diligent fox journalist with a laptop, covering the latest news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreieheh3vejtdlkr43gd5hmxuaquyck4fikdg36ovak5snlncygogqq",
+    "attributes": [
+      { "trait_type": "Type", "value": "Journalist" },
+      { "trait_type": "Animal", "value": "Fox" },
+      { "trait_type": "Equipment", "value": "Laptop & Headphones" }
+    ]
+  },
+  {
+    "name": "News Hamster Analyst",
+    "description": "A hamster analyst in a brown suit, reporting with coffee and notes.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafybeih2nkn3vv74bxwfvmpd6lm4fuv7ycax77erukshsdyempovtgx3dm",
+    "attributes": [
+      { "trait_type": "Type", "value": "Analyst" },
+      { "trait_type": "Animal", "value": "Hamster" },
+      { "trait_type": "Accessory", "value": "Headphones & Glasses" }
+    ]
+  },
+  {
+    "name": "Field Reporter Bunny",
+    "description": "A bunny field reporter in a blue plaid suit, holding a microphone.",
+    "image": "https://90435dc40a621a9fa78ca7622125cd00.ipfscdn.io/ipfs/bafybeifytrh7nrrrt23zxra37oozfequixkiraqpdehkuaqk6sqa7kcxka/0",
+    "attributes": [
+      { "trait_type": "Type", "value": "Field Reporter" },
+      { "trait_type": "Animal", "value": "Bunny" },
+      { "trait_type": "Accessory", "value": "Headphones & Cap" }
+    ]
+  },
+  {
+    "name": "NFT News Anchor Fox",
+    "description": "A professional fox news anchor in a purple suit, holding an NFT microphone.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreihv7vwfpliq4c3ot2bebgaquveehtrwczf7rlb57gb7lnoi5vqeje",
+    "attributes": [
+      { "trait_type": "Type", "value": "News Anchor" },
+      { "trait_type": "Animal", "value": "Fox" },
+      { "trait_type": "Outfit", "value": "Purple Suit" }
+    ]
+  },
+  {
+    "name": "News Van Reporter",
+    "description": "A dedicated reporter hamster sitting outside a blue and white news van.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiclz6ctbgv7uu72g3zomidvw7lljgg2rrukzj4wqzwoy7axybthti",
+    "attributes": [
+      { "trait_type": "Type", "value": "Reporter" },
+      { "trait_type": "Animal", "value": "Hamster" },
+      { "trait_type": "Vehicle", "value": "News Van" }
+    ]
+  },
+  {
+    "name": "Tech Journalist Squirrel",
+    "description": "A high-tech news reporter squirrel with a drone and a laptop.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreig5emfomcftq6yzt5mhrbvjh3mnxczwjwqml6s45fpdogczu6kbti",
+    "attributes": [
+      { "trait_type": "Type", "value": "Tech Journalist" },
+      { "trait_type": "Animal", "value": "Squirrel" },
+      { "trait_type": "Equipment", "value": "Drone & Laptop" }
+    ]
+  },
+  {
+    "name": "Newspaper Hamster",
+    "description": "A hamster journalist reading the latest breaking news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreicnhijr4dkybqfbp37qjw3fxlodj7rtjyexkrlp4nhyymfgiuucqm",
+    "attributes": [
+      { "trait_type": "Type", "value": "Journalist" },
+      { "trait_type": "Animal", "value": "Hamster" },
+      { "trait_type": "Accessory", "value": "Headphones & Newspaper" }
+    ]
+  },
+  {
+    "name": "Investing News Raccoon",
+    "description": "A stylish raccoon writing an investment news article on a typewriter.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreid67ipidulokcv4svwgrrhejfozbush4x25bh4o2bghiwyhpomit4",
+    "attributes": [
+      { "trait_type": "Type", "value": "Financial Journalist" },
+      { "trait_type": "Animal", "value": "Raccoon" },
+      { "trait_type": "Equipment", "value": "Typewriter" }
+    ]
+  },
+  {
+    "name": "City Press Fox",
+    "description": "A sophisticated fox journalist in red glasses, covering the latest city news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreia3r5b6erculm4jqpp32wnzy35amyonho3b2dut3af7hmc7lf4hc4",
+    "attributes": [
+      { "trait_type": "Type", "value": "City Journalist" },
+      { "trait_type": "Animal", "value": "Fox" },
+      { "trait_type": "Outfit", "value": "Red Glasses & Hat" }
+    ]
+  },
+  {
+    "name": "Breaking News Wolf",
+    "description": "A professional wolf news anchor in a suit, covering breaking news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiehdzzdqlqkrjip27yp73ohagcshomhzo3i4yslqauwfwlfnl4iey",
+    "attributes": [
+      { "trait_type": "Type", "value": "News Anchor" },
+      { "trait_type": "Animal", "value": "Wolf" },
+      { "trait_type": "Accessory", "value": "Hat & Microphone" }
+    ]
+  },
+  {
+    "name": "NFT Journalist Raccoon",
+    "description": "A raccoon journalist covering NFT news with a microphone.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidyu7nj2j7yfob4sdxovgbsflgimm2rzvh3al5vsdsekyv24fgg4i",
+    "attributes": [
+      { "trait_type": "Type", "value": "Journalist" },
+      { "trait_type": "Animal", "value": "Raccoon" },
+      { "trait_type": "Outfit", "value": "Trench Coat" }
+    ]
+  },
+  {
+    "name": "Press Reporter Husky",
+    "description": "A husky journalist reading the latest press release in the city.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreidgdmzqoscpixyqwf7fo3xu2q4ogrvnxpyx6l4a2wqu77gp7kzvxu",
+    "attributes": [
+      { "trait_type": "Type", "value": "Press Reporter" },
+      { "trait_type": "Animal", "value": "Husky" },
+      { "trait_type": "Accessory", "value": "Trench Coat" }
+    ]
+  },
+  {
+    "name": "Mobile News Cat",
+    "description": "A cat journalist reporting live from a mobile news vehicle.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreibwoyo2f6rh3jkbno7xodlyq36hoztkdzo3sximthfjocsenzq6mi",
+    "attributes": [
+      { "trait_type": "Type", "value": "Field Reporter" },
+      { "trait_type": "Animal", "value": "Cat" },
+      { "trait_type": "Vehicle", "value": "News Van" }
+    ]
+  },
+  {
+    "name": "Breaking News Red Panda",
+    "description": "A red panda news anchor delivering urgent breaking news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreigqmes5xnvyg4aevpspqh47jggv54svfx7ebc3gd4am7f4jqitbny",
+    "attributes": [
+      { "trait_type": "Type", "value": "News Anchor" },
+      { "trait_type": "Animal", "value": "Red Panda" },
+      { "trait_type": "Microphone", "value": "NPT" }
+    ]
+  },
+  {
+    "name": "News Team Husky & Penguin",
+    "description": "A dedicated news team featuring a husky reporter and a penguin journalist.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreibe76gmo5guocbvlq3zu77fay5tl6ahlq56omzsga3miaquggbpxq",
+    "attributes": [
+      { "trait_type": "Type", "value": "News Team" },
+      { "trait_type": "Animal", "value": "Husky & Penguin" },
+      { "trait_type": "Accessory", "value": "Microphone & Newspaper" }
+    ]
+  },
+  {
+    "name": "Coffee News Fox",
+    "description": "A fox journalist enjoying coffee while reading the latest headlines.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreigidqlkp2yejgjindjm7y5zopdkytceoxjco2niqjoos5zhpzzv5y",
+    "attributes": [
+      { "trait_type": "Type", "value": "Newspaper Journalist" },
+      { "trait_type": "Animal", "value": "Fox" },
+      { "trait_type": "Accessory", "value": "Coffee & Newspaper" }
+    ]
+  },
+  {
+    "name": "Crypto Journalist Corgi",
+    "description": "A corgi journalist reporting on cryptocurrency and NFTs.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreihhr4cwyiglyru6fb3fgkelyuh5nut32ebdeiv3nbsm35rlidx6lq",
+    "attributes": [
+      { "trait_type": "Type", "value": "Crypto Reporter" },
+      { "trait_type": "Animal", "value": "Corgi" },
+      { "trait_type": "Accessory", "value": "Bitcoin Coin & NFT Microphone" }
+    ]
+  },
+  {
+    "name": "Investigative Journalist Dog",
+    "description": "A dedicated dog journalist investigating the latest news stories.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreigqgzwql65ptzb2bgwftsm7zvdeiipgup3jlho2vp2nf3pzdfxtci",
+    "attributes": [
+      { "trait_type": "Type", "value": "Investigative Journalist" },
+      { "trait_type": "Animal", "value": "Dog" },
+      { "trait_type": "Accessory", "value": "Notebook & Glasses" }
+    ]
+  },
+  {
+    "name": "Field Reporter Fox",
+    "description": "A fox journalist reporting live from the field.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiaamhxjnlozupfca2dvdnjhxam75ju5eygd3ecv57iixbyabbfjwe",
+    "attributes": [
+      { "trait_type": "Type", "value": "Field Reporter" },
+      { "trait_type": "Animal", "value": "Fox" },
+      { "trait_type": "Microphone", "value": "News Branded" }
+    ]
+  },
+  {
+    "name": "News Cameraman Cat",
+    "description": "A cat cameraman capturing the latest breaking news footage.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiegpj3xrn5f74v7gxuvr5l6nraqawhwnjc75b7f3zdkn6gcqpc3ky",
+    "attributes": [
+      { "trait_type": "Type", "value": "Cameraman" },
+      { "trait_type": "Animal", "value": "Cat" },
+      { "trait_type": "Equipment", "value": "Professional Camera" }
+    ]
+  },
+  {
+    "name": "Press Club Penguin",
+    "description": "A penguin journalist reporting from the prestigious press club.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreibo3dzlb44mdlp2unkykrjr7xuik3bzopivexi2ayn3uemgnbi2hq",
+    "attributes": [
+      { "trait_type": "Type", "value": "Press Journalist" },
+      { "trait_type": "Animal", "value": "Penguin" },
+      { "trait_type": "Outfit", "value": "Press Hat & Suit" }
+    ]
+  },
+  {
+    "name": "News Desk Squirrel",
+    "description": "A squirrel journalist working at the news desk, analyzing breaking news.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreigquwwm5rxi3wszhv5dzkc7wsxshrpz3acaw3kvt2exeuus4km33i",
+    "attributes": [
+      { "trait_type": "Type", "value": "News Desk Reporter" },
+      { "trait_type": "Animal", "value": "Squirrel" },
+      { "trait_type": "Equipment", "value": "Typewriter" }
+    ]
+  },
+  {
+    "name": "Political Analyst Bear",
+    "description": "A bear journalist analyzing political news and reporting key insights.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreifxalniczjt6hbligw36r3xmcmbti3r3zh6mw52dr3fkoqtby57ra",
+    "attributes": [
+      { "trait_type": "Type", "value": "Political Analyst" },
+      { "trait_type": "Animal", "value": "Bear" },
+      { "trait_type": "Accessory", "value": "Glasses & Newspaper" }
+    ]
+  },
+  {
+    "name": "Nighttime News Reporter Husky",
+    "description": "A husky journalist covering breaking news during the nighttime broadcast.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreifuqrpqvbzfw6hoqmmo7rvg2ydku4exkpf3yvsxqujs7j6jqosacu",
+    "attributes": [
+      { "trait_type": "Type", "value": "Nighttime Reporter" },
+      { "trait_type": "Animal", "value": "Husky" },
+      { "trait_type": "Theme", "value": "Evening News" }
+    ]
+  },
+  {
+    "name": "Financial News Raccoon",
+    "description": "A raccoon journalist reporting on the latest stock market updates.",
+    "image": "https://ivory-holy-bonobo-724.mypinata.cloud/ipfs/bafkreiciatkqvipsw3lgjrvnkhmlsegzyf2iafz3mcle4kiekz3cr76ypa",
+    "attributes": [
+      { "trait_type": "Type", "value": "Financial Journalist" },
+      { "trait_type": "Animal", "value": "Raccoon" },
+      { "trait_type": "Accessory", "value": "Notebook & Stock Reports" }
+    ]
+  }
+]
