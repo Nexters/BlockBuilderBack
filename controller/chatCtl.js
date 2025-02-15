@@ -1,5 +1,23 @@
 const chatService = require("../services/chatSvc");
 const pool = require("../src/config/database");
+require("dotenv").config();
+
+const geminiChat = async (req, res) => {
+  let connection;
+  try {
+    const { eoa, msg } = req.body;
+    if (!eoa || !msg) {
+      return res.status(400).json({ error: "eoa and msg are required" });
+    }
+    connection = await pool.getConnection();
+    const data = await chatService.postChatGemini(connection, req.body);
+    res.json(data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  } finally {
+    if (connection) connection.release();
+  }
+};
 
 const ollamaChat = async (req, res) => {
   let connection;
@@ -67,4 +85,5 @@ module.exports = {
   getChat,
   ollamaChat,
   getUser,
+  geminiChat,
 };

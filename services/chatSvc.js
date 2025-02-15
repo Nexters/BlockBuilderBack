@@ -1,6 +1,9 @@
 const OpenAI = require("openai");
 const chatModal = require("../src/models/chatModel");
 const { Ollama } = require("@langchain/ollama");
+const axios = require("axios");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require("dotenv").config();
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,7 +15,7 @@ const RespGpt = async (msg) => {
     messages: [
       {
         role: "system",
-        content: `"You are a useful blockchain helper. Only create response data in markdown format"`,
+        content: `"You are a useful blockchain helper. Only create response data in markdown format "`,
       },
       { role: "user", content: msg },
     ],
@@ -38,8 +41,29 @@ const RespOllm = async (msg) => {
      \ntitle: 
      \ncontents`
   );
-  console.log(response);
+
   return response;
+};
+
+const RespGemini = async (msg) => {
+  try {
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다.");
+    }
+
+    const prompt = `${msg}`;
+    const geminiAnswer =
+      (await model.generateContent(prompt)) || "응답을 생성하지 못했습니다.";
+
+    const geminiText = await geminiAnswer.response.text();
+    return geminiText;
+  } catch (error) {
+    console.error("Gemini API 호출 중 오류 발생:", error);
+    return "Gemini API 오류로 인해 응답을 생성할 수 없습니다.";
+  }
 };
 
 const MakeToday = async () => {
@@ -114,7 +138,7 @@ const postChatSvc = async (connection, data) => {
       title = result[0].title;
     } else {
       const extractedTitle = await summarizeText(chatGptAnswer);
-      console.log("extractedTitle", extractedTitle);
+
       sessResult = await chatModal.PostSess(connection, eoa, extractedTitle);
       session_id = sessResult.insertId;
       title = extractedTitle;
@@ -141,6 +165,47 @@ const postChatSvc = async (connection, data) => {
   }
 };
 
+const postChatGemini = async (connection, data) => {
+  try {
+    const { eoa, msg } = data;
+    const today = MakeToday();
+    const sessData = { eoa: eoa, today: today };
+
+    await connection.beginTransaction();
+    const result = await chatModal.GetChatSess(connection, sessData);
+    const geminiAnswer = await RespGemini(msg);
+
+    let session_id, title;
+    if (result.length > 0) {
+      session_id = result[0].id;
+      title = result[0].title;
+    } else {
+      const extractedTitle = await summarizeGemini(geminiAnswer);
+      const sessResult = await chatModal.PostSess(
+        connection,
+        eoa,
+        extractedTitle
+      );
+      session_id = sessResult.insertId;
+      title = extractedTitle;
+    }
+
+    const userData = { session_id, sender: "user", message: msg };
+    const geminiData = { session_id, sender: "gpt", message: geminiAnswer };
+
+    const resUserdata = await chatModal.PostMsg(connection, userData);
+    console.log("resUserdata", resUserdata);
+    const resGeminidata = await chatModal.PostMsg(connection, geminiData);
+    console.log("resGeminidata", resGeminidata);
+    await connection.commit();
+
+    return geminiAnswer;
+  } catch (e) {
+    await connection.rollback();
+    throw e;
+  }
+};
+
 const summarizeText = async (text) => {
   const summaryResponse = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
@@ -155,6 +220,19 @@ const summarizeText = async (text) => {
 
   console.log("summaryResponse", summaryResponse);
   return summaryResponse.choices[0].message.content.trim();
+};
+
+const summarizeGemini = async (text) => {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+  const result = await model.generateContent(
+    `data: ${text}  입력받은 데이터에 대해 10자 이내로 제목으로 압축해줘`
+  );
+  const response = await result.response;
+  const summarizeText = await response.text();
+  console.log(summarizeText);
+  return summarizeText;
 };
 
 const parseGptResponse = (responseText) => {
@@ -184,4 +262,7 @@ module.exports = {
   getChatSvc,
   ollmChatSvc,
   summarizeText,
+  RespGemini,
+  postChatGemini,
+  summarizeGemini,
 };

@@ -44,7 +44,9 @@ router.get("/api/v1/wallet/decrypt", loginController.getDecryptedMnemonic);
 //chat
 router.post("/api/v1/ollm/chat/", chatController.ollamaChat);
 router.post("/api/v1/agent/chat/", chatController.postChat);
+router.post("/api/v1/agent/gemini/", chatController.geminiChat);
 router.get("/api/v1/agent/chat/", chatController.getChat);
+//geminiChat
 
 //vote
 router.post("/api/v1/vote/ca/deploy", contractController.deployVoteContract);

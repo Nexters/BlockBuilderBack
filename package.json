@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@langchain/ollama": "^0.1.5",
     "@thirdweb-dev/storage": "^2.0.15",
     "axios": "^1.7.9",
