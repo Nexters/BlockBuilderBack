@@ -194,9 +194,9 @@ const postChatGemini = async (connection, data) => {
     const geminiData = { session_id, sender: "gpt", message: geminiAnswer };
 
     const resUserdata = await chatModal.PostMsg(connection, userData);
-    console.log("resUserdata", resUserdata);
+
     const resGeminidata = await chatModal.PostMsg(connection, geminiData);
-    console.log("resGeminidata", resGeminidata);
+
     await connection.commit();
 
     return geminiAnswer;
@@ -218,7 +218,6 @@ const summarizeText = async (text) => {
     ],
   });
 
-  console.log("summaryResponse", summaryResponse);
   return summaryResponse.choices[0].message.content.trim();
 };
 
@@ -231,7 +230,6 @@ const summarizeGemini = async (text) => {
   );
   const response = await result.response;
   const summarizeText = await response.text();
-  console.log(summarizeText);
   return summarizeText;
 };
 

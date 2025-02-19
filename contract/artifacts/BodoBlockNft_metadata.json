@@ -11,6 +11,11 @@
 						"internalType": "address",
 						"name": "initialOwner",
 						"type": "address"
+					},
+					{
+						"internalType": "string[]",
+						"name": "_tokenUris",
+						"type": "string[]"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -365,11 +370,47 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
+						"name": "count",
+						"type": "uint256"
+					}
+				],
+				"name": "batchMint",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
 						"name": "tokenId",
 						"type": "uint256"
 					}
 				],
 				"name": "burn",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					}
+				],
+				"name": "customSafeTransferFrom",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -388,6 +429,19 @@
 						"internalType": "address",
 						"name": "",
 						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getUserTokenId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -920,7 +974,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contract/artifacts/BodoBlockNft.sol": "BodoBlockNft"
+			"contract/BodoBlockNft.sol": "BodoBlockNft"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -1126,12 +1180,12 @@
 				"dweb:/ipfs/QmVUSvooZKEdEdap619tcJjTLcAuH6QBdZqAzWwnAXZAWJ"
 			]
 		},
-		"contract/artifacts/BodoBlockNft.sol": {
-			"keccak256": "0x06d5cf01a5e7e255d3976ccf4f8bb8c2babc8bcc9da06e08fe95e0a399060821",
+		"contract/BodoBlockNft.sol": {
+			"keccak256": "0xc1d4bcafa12f49eb76a7caa0d4d495c5cebde090062776f3d7e1d93b6990aaec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://8e45a5bdcd786f64d32c51f89c41a7b40c9df676ae4c81c6eef9010d876ae8b6",
-				"dweb:/ipfs/QmTd8wg8Pm1WN8mnJJtNL9PP6cZ32AKHJFY81KUSrQc5b5"
+				"bzz-raw://4f46086d529dad7c822bf1642db8ca90ff61a9eddb5095b77b812ee932742f7d",
+				"dweb:/ipfs/QmSNt8CHsUCx1YyZ81jibPBKwMD8uQjyzxTnGCDVnKX6g6"
 			]
 		}
 	},

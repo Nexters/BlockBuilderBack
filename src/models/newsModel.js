@@ -108,7 +108,7 @@ async function insertRssData(connection, data) {
 
   try {
     const [result] = await connection.query(query, values);
-    console.log("result", result);
+
     return result.insertId;
   } catch (error) {
     console.error("error", error);

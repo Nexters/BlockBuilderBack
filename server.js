@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const newSvc = require("./services/newsSvc");
+const lib = require("./util/lib");
 const path = require("path");
 const fs = require("fs");
 app.use(express.static("public"));
@@ -27,6 +28,8 @@ if (!fs.existsSync(uploadsDir)) {
 
 newSvc.scheduleDataFetching();
 app.use(require("./src/routes"));
+
+//lib.prefetchIpfsMapping().catch(console.error);
 
 app.listen(port, () => {
   console.log(`Express Server running on http://localhost:${port}`);

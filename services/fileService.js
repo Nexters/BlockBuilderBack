@@ -10,12 +10,10 @@ const pinata = new PinataSDK({
 });
 const jsonToIpfsUploadPinataService = async (jsonData) => {
   try {
-    console.log("Uploading JSON to IPFS via Pinata", jsonData);
     const upload = await pinata.upload.json(jsonData);
     const ipfsUri = `${process.env.GATEWAY_URL}/ipfs/${upload.IpfsHash}`;
     return ipfsUri;
   } catch (e) {
-    console.error("Error uploading JSON to IPFS", e);
     throw e;
   }
 };

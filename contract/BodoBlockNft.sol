@@ -11,11 +11,15 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract BodoBlockNft is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausable, Ownable, ERC721Burnable {
     uint256 private _nextTokenId;
+    uint256 private _userTokenId;
+     string[] private tokenUris;
 
-    constructor(address initialOwner)
+    constructor(address initialOwner, string[] memory _tokenUris)
         ERC721("BODOBLOCK", "BODO")
         Ownable(initialOwner)
-    {}
+    {
+        tokenUris = _tokenUris;
+    }
 
     function pause() public onlyOwner {
         _pause();
@@ -31,7 +35,24 @@ contract BodoBlockNft is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausa
         _setTokenURI(tokenId, uri);
     }
 
-    // The following functions are overrides required by Solidity.
+    function getUserTokenId() public view returns (uint256) {
+        return _userTokenId;
+    }
+
+        // 배치 민트 함수: count만큼 토큰을 민팅합니다.
+    function batchMint(uint256 count) public onlyOwner {
+        for (uint i = 0; i < count; i++) {
+            uint256 tokenId = _nextTokenId++;
+            _safeMint(msg.sender, tokenId);
+            uint256 randomIndex = uint256(
+                keccak256(
+                    abi.encodePacked(block.timestamp, block.difficulty, tokenId)
+                )
+            ) % tokenUris.length;
+
+            _setTokenURI(tokenId, tokenUris[randomIndex]);
+        }
+    }
 
     function _update(address to, uint256 tokenId, address auth)
         internal
@@ -64,5 +85,16 @@ contract BodoBlockNft is ERC721, ERC721Enumerable, ERC721URIStorage, ERC721Pausa
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    function customSafeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public {
+        safeTransferFrom(from, to, tokenId);
+        if (from != address(0) && to != address(0)) {
+            _userTokenId += 1;
+        }
     }
 }

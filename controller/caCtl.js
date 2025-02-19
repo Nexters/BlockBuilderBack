@@ -34,14 +34,12 @@ const baseWallet = new ethers.Wallet(process.env.PRIVATE_KEY, baseProvider);
 let voteCa, nftCa;
 if (process.env.VOTECA) {
   voteCa = new ethers.Contract(process.env.VOTECA, voteCaData.abi, baseWallet);
-  console.log(`Connected to existing contract at: ${process.env.VOTECA}`);
 } else {
   console.error("⚠️ No contract address found in process.env.VOTECA");
 }
 
 if (process.env.NFTCA) {
   nftCa = new ethers.Contract(process.env.NFTCA, nftCaData.abi, baseWallet);
-  console.log(`Connected to existing contract at: ${process.env.NFTCA}`);
 }
 
 const deployVoteContract = async (req, res) => {
@@ -51,7 +49,7 @@ const deployVoteContract = async (req, res) => {
       voteCaData.data.bytecode,
       baseWallet
     );
-    console.log(factory);
+
     const contract = await factory.deploy(baseWallet.address);
     result = await contract.waitForDeployment();
 
@@ -72,8 +70,6 @@ const deployNftContract = async (req, res) => {
       nftCaData.data.bytecode,
       baseWallet
     );
-
-    console.log("nft", factory);
 
     const contract = await factory.deploy(wallet.address);
     result = await contract.waitForDeployment();
@@ -104,8 +100,6 @@ const deployFTContract = async (req, res) => {
       });
     }
 
-    console.log("ft", factory);
-
     const contract = await factory.deploy(
       baseWallet.address, // initialOwner
       recipient, // 수령자 (토큰을 받을 주소)
@@ -131,96 +125,44 @@ const deployFTContract = async (req, res) => {
   }
 };
 
-// const mintNft = async (req, res) => {
-//   try {
-//     const { recipient } = req.body;
-//     if (!recipient) {
-//       return res
-//         .status(400)
-//         .json({ error: "Recipient and tokenUri are required" });
-//     }
-
-//     const nftCa = new ethers.Contract(
-//       process.env.NFTCA,
-//       nftCaData.abi,
-//       baseWallet
-//     );
-
-//     const tokenUri = await lib.ranTokUri();
-//     const tx = await nftCa.safeMint(recipient, tokenUri);
-//     const receipt = await tx.wait();
-
-//     const event = receipt.logs.find((log) => log.fragment.name === "Transfer");
-//     if (!event) {
-//       return res
-//         .status(500)
-//         .json({ error: "Minting event not found in transaction receipt" });
-//     }
-
-//     const tokenId = event.args.tokenId.toString();
-//     const ipfsImg = await lib.getImageFromUri(tokenUri);
-//     const image_url = await lib.convertCid(ipfsImg);
-
-//     res.json({
-//       message: "NFT Minted Successfully",
-//       tokenUri: tokenUri,
-//       image_url: image_url,
-//       opensea: `https://testnets.opensea.io/assets/base_sepolia/0xf50036d01e12c011c6153e4b8228d650dfccb942/${tokenId}`,
-//       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
-//       tokenId,
-//       transactionHash: receipt.hash,
-//       nftCa: nftCa,
-//     });
-//   } catch (error) {
-//     console.error("Error minting NFT:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
 const mintNft = async (req, res) => {
   try {
     const { recipient } = req.body;
     if (!recipient) {
-      return res.status(400).json({ error: "Recipient is required" });
-    }
-
-    // 1. 토큰 URI 준비
-    const tokenUri = await lib.ranTokUri();
-
-    // 2. 컨트랙트 인스턴스 재사용
-    const nftCa =
-      global.nftContract ||
-      new ethers.Contract(process.env.NFTCA, nftCaData.abi, baseWallet);
-    if (!global.nftContract) global.nftContract = nftCa;
-
-    // 3. 가스 관련 설정 없이 기본 트랜잭션 전송
-    const tx = await nftCa.safeMint(recipient, tokenUri);
-
-    // 4. 병렬 처리 시작
-    const ipfsImgPromise = lib.getImageFromUri(tokenUri);
-    const receipt = await tx.wait();
-
-    // 5. 이벤트 파싱
-    const event = receipt.logs.find((log) => log.fragment?.name === "Transfer");
-    if (!event) {
       return res
-        .status(500)
-        .json({ error: "Minting event not found in transaction receipt" });
+        .status(400)
+        .json({ error: "Recipient and tokenUri are required" });
     }
 
-    const tokenId = event.args.tokenId.toString();
+    const nftCa = new ethers.Contract(
+      process.env.NFTCA,
+      nftCaData.abi,
+      baseWallet
+    );
 
-    // 6. 이미지 정보 처리 완료 대기
-    const ipfsImg = await ipfsImgPromise;
-    const image_url = await lib.convertCid(ipfsImg);
+    const tokenId = await nftCa.getUserTokenId();
+    const ownerAddress = process.env.OWNER;
 
-    // 7. 응답 반환
+    const tx = await nftCa.customSafeTransferFrom(
+      ownerAddress,
+      recipient,
+      tokenId
+    );
+
+    const [receipt, tokenUri] = await Promise.all([
+      tx.wait(),
+      nftCa.tokenURI(tokenId),
+    ]);
+
+    const image_url = await lib.getImageUrlFromMapping(tokenUri);
+
     res.json({
       message: "NFT Minted Successfully",
-      tokenUri,
-      image_url,
-      opensea: `https://testnets.opensea.io/assets/base_sepolia/0xf50036d01e12c011c6153e4b8228d650dfccb942/${tokenId}`,
+      tokenUri: tokenUri,
+      image_url: image_url,
+      opensea: `https://testnets.opensea.io/assets/base_sepolia/${nftCa.address}/${tokenId}`,
       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
-      tokenId,
+      tokenId: tokenId.toString(),
       transactionHash: receipt.hash,
     });
   } catch (error) {
@@ -233,14 +175,7 @@ const createTopic = async (req, res) => {
   let connection;
   try {
     const { eoa, question, option_one, option_two, end_time } = req.body;
-    console.log(
-      " eoa, question, option_one, option_two, end_time",
-      eoa,
-      question,
-      option_one,
-      option_two,
-      end_time
-    );
+
     if (!eoa || !question || !option_one || !option_two || !end_time) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -256,14 +191,13 @@ const createTopic = async (req, res) => {
       .replace("T", " ");
 
     const tx = await voteCa.createTopic(eoa, question, option_one, option_two);
-    console.log("tx", tx);
+
     const receipt = await tx.wait();
-    console.log("receipt", receipt);
-    console.log("receipt.logs", receipt.logs);
+
     const event = receipt.logs.find(
       (log) => log.fragment.name === "TopicCreated"
     );
-    console.log("event", event);
+
     if (!event) {
       return res
         .status(500)
@@ -327,7 +261,6 @@ const vote = async (req, res) => {
       receipt_link,
     });
   } catch (error) {
-    console.log("error", error);
     if (connection) await connection.rollback();
     console.error("DB Transaction Error:", error);
     return res.status(500).json({ error: "Database transaction failed" });
@@ -355,7 +288,6 @@ const getUserVote = async (req, res) => {
   let connection;
   try {
     let eoa = req.query.eoa;
-    console.log("Eoa", eoa);
     connection = await pool.getConnection();
     const result = await caSvc.getUserTopic(connection, eoa);
     res.json(result.data);

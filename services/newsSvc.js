@@ -165,8 +165,6 @@ const scheduleDataFetching = async () => {
       const rssUrls = rssArr.map((row) => row.url);
       for (let i = 0; i < rssUrls.length; i++) {
         try {
-          console.log(rssUrls[i]);
-
           const response = await fetch(rssUrls[i]);
           if (!response.ok) {
             throw new Error(`Failed to fetch RSS data: ${response.statusText}`);
@@ -292,7 +290,7 @@ const scheduleDataFetching = async () => {
                   connection,
                   rssData
                 );
-                console.log(`Inserted item with ID: ${insertId}`);
+
                 await connection.commit();
               } catch (error) {
                 console.error(`Error inserting RSS item:`, error);

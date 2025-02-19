@@ -44,7 +44,6 @@ const updateTopic = async (connection, topicData) => {
       data,
     };
   } catch (e) {
-    console.log(e);
     console.error(e);
     await connection.rollback();
     throw e;

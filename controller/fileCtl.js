@@ -3,7 +3,6 @@ const lib = require("../util/lib");
 
 const jsonToIpfsPinata = async (req, res) => {
   try {
-    console.log("req.body", req.body);
     const jsonData = {
       name: req.body.name,
       image: req.body.image,
@@ -14,42 +13,33 @@ const jsonToIpfsPinata = async (req, res) => {
     const ipfsUri = await fileService.jsonToIpfsUploadPinataService(jsonData);
     res.status(200).json({ ipfsUri });
   } catch (error) {
-    console.log("Error in jsonToIpfsPinata", error);
     res.status(500).send(error.message);
   }
 };
 
 const pinataUpload = async (req, res) => {
   try {
-    console.log("tset");
     const fileData = req.file;
     const data = await fileService.fileToIpfsUploadPinataService(fileData);
-    console.log("data", data);
+
     res.status(200).json(data);
   } catch (error) {
-    console.log("error", error);
     res.status(500).send(error.message);
   }
 };
 
 const fileToIpfsUpload = async (req, res) => {
   try {
-    console.log("tset");
     const fileData = req.file;
-    console.log("req.file", req.file);
-    console.log("controller fileData", fileData);
     const data = await fileService.fileToIpfsUploadService(fileData);
-    console.log("data", data);
     res.status(200).json(data);
   } catch (error) {
-    console.log("error", error);
     res.status(500).send(error.message);
   }
 };
 
 const jsonToIpfs = async (req, res) => {
   try {
-    console.log("req.body", req.body);
     const nftMetadata = {
       name: req.body.name,
       image: req.body.image,
@@ -60,7 +50,6 @@ const jsonToIpfs = async (req, res) => {
     IpfsUri = await fileService.jsonToIpfsSvc(nftMetadata);
     res.status(200).json(IpfsUri);
   } catch (e) {
-    console.log("error", error);
     throw e;
   }
 };
@@ -75,7 +64,6 @@ const convertIpfs = async (req, res) => {
     const resolvedUrl = lib.convertCid(ipfsUrl);
     return res.json({ ipfsUrl: resolvedUrl });
   } catch (e) {
-    console.log("error", error);
     throw e;
   }
 };
