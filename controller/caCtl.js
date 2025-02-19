@@ -160,7 +160,7 @@ const mintNft = async (req, res) => {
       message: "NFT Minted Successfully",
       tokenUri: tokenUri,
       image_url: image_url,
-      opensea: `https://testnets.opensea.io/assets/base_sepolia/${nftCa.address}/${tokenId}`,
+      opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${tokenId}`,
       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
       tokenId: tokenId.toString(),
       transactionHash: receipt.hash,
