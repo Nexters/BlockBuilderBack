@@ -131,34 +131,76 @@ const deployFTContract = async (req, res) => {
   }
 };
 
+// const mintNft = async (req, res) => {
+//   try {
+//     const { recipient } = req.body;
+//     if (!recipient) {
+//       return res
+//         .status(400)
+//         .json({ error: "Recipient and tokenUri are required" });
+//     }
+
+//     const nftCa = new ethers.Contract(
+//       process.env.NFTCA,
+//       nftCaData.abi,
+//       baseWallet
+//     );
+
+//     const tokenUri = await lib.ranTokUri();
+//     const tx = await nftCa.safeMint(recipient, tokenUri);
+//     const receipt = await tx.wait();
+
+//     const event = receipt.logs.find((log) => log.fragment.name === "Transfer");
+//     if (!event) {
+//       return res
+//         .status(500)
+//         .json({ error: "Minting event not found in transaction receipt" });
+//     }
+
+//     const tokenId = event.args.tokenId.toString();
+//     const ipfsImg = await lib.getImageFromUri(tokenUri);
+//     const image_url = await lib.convertCid(ipfsImg);
+
+//     res.json({
+//       message: "NFT Minted Successfully",
+//       tokenUri: tokenUri,
+//       image_url: image_url,
+//       opensea: `https://testnets.opensea.io/assets/base_sepolia/0xf50036d01e12c011c6153e4b8228d650dfccb942/${tokenId}`,
+//       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
+//       tokenId,
+//       transactionHash: receipt.hash,
+//       nftCa: nftCa,
+//     });
+//   } catch (error) {
+//     console.error("Error minting NFT:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 const mintNft = async (req, res) => {
   try {
     const { recipient } = req.body;
     if (!recipient) {
-      return res
-        .status(400)
-        .json({ error: "Recipient and tokenUri are required" });
+      return res.status(400).json({ error: "Recipient is required" });
     }
 
-    const nftCa = new ethers.Contract(
-      process.env.NFTCA,
-      nftCaData.abi,
-      baseWallet
-    );
-    if (!nftCa) {
-      return res
-        .status(500)
-        .json({ error: "NFT contract instance not initialized" });
-    }
+    // 1. 토큰 URI 준비
     const tokenUri = await lib.ranTokUri();
-    console.log("tokenUri", tokenUri);
 
+    // 2. 컨트랙트 인스턴스 재사용
+    const nftCa =
+      global.nftContract ||
+      new ethers.Contract(process.env.NFTCA, nftCaData.abi, baseWallet);
+    if (!global.nftContract) global.nftContract = nftCa;
+
+    // 3. 가스 관련 설정 없이 기본 트랜잭션 전송
     const tx = await nftCa.safeMint(recipient, tokenUri);
-    const receipt = await tx.wait(2);
 
-    const event = await receipt.logs.find(
-      (log) => log.fragment.name === "Transfer"
-    );
+    // 4. 병렬 처리 시작
+    const ipfsImgPromise = lib.getImageFromUri(tokenUri);
+    const receipt = await tx.wait();
+
+    // 5. 이벤트 파싱
+    const event = receipt.logs.find((log) => log.fragment?.name === "Transfer");
     if (!event) {
       return res
         .status(500)
@@ -166,18 +208,20 @@ const mintNft = async (req, res) => {
     }
 
     const tokenId = event.args.tokenId.toString();
-    const ipfsImg = await lib.getImageFromUri(tokenUri);
+
+    // 6. 이미지 정보 처리 완료 대기
+    const ipfsImg = await ipfsImgPromise;
     const image_url = await lib.convertCid(ipfsImg);
 
+    // 7. 응답 반환
     res.json({
       message: "NFT Minted Successfully",
-      tokenUri: tokenUri,
-      image_url: image_url,
+      tokenUri,
+      image_url,
       opensea: `https://testnets.opensea.io/assets/base_sepolia/0xf50036d01e12c011c6153e4b8228d650dfccb942/${tokenId}`,
       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
       tokenId,
       transactionHash: receipt.hash,
-      nftCa: nftCa,
     });
   } catch (error) {
     console.error("Error minting NFT:", error);
