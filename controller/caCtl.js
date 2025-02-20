@@ -92,13 +92,16 @@ const deployFTContract = async (req, res) => {
       baseWallet
     );
 
-    const { recipient, image, name, symbol, amount } = req.body;
+    const { recipient, name, symbol } = req.body;
 
-    if (!recipient || !image || !name || !symbol || !amount) {
+    if (!recipient || !name || !symbol) {
       return res.status(400).json({
-        error: "Recipient, image, name, symbol, and amount are required",
+        error: "Recipient, name, symbol are required",
       });
     }
+
+    const image = process.env.IMAGE;
+    const amount = 1000;
 
     const contract = await factory.deploy(
       baseWallet.address, // initialOwner
