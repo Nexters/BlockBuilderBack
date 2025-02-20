@@ -117,8 +117,8 @@ const deployFTContract = async (req, res) => {
       symbol: symbol,
       image: image,
       amount: amount,
-      result: result,
-      contractAddress: contract.address,
+      //result: result,
+      contractAddress: result.target,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
