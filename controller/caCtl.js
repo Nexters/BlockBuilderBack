@@ -120,7 +120,7 @@ const deployFTContract = async (req, res) => {
       symbol: symbol,
       image: image,
       amount: amount,
-      //result: result,
+      result: result,
       contractAddress: result.target,
     });
   } catch (error) {
