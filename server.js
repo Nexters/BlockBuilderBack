@@ -10,7 +10,7 @@ app.use(express.static("public"));
 const cors = require("cors");
 app.use(
   cors({
-    origin: "*", // 허용할 도메인
+    origin: "https://www.for-the-block.com", // 허용할 도메인
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // 필요에 따라 설정
     optionsSuccessStatus: 204,
