@@ -144,11 +144,22 @@ const mintNft = async (req, res) => {
 
     const tokenId = await nftCa.getUserTokenId();
     const ownerAddress = process.env.OWNER;
+    const nonce = await baseProvider.getTransactionCount(
+      baseWallet.address,
+      "latest"
+    );
+    // const gasLimit = await nftCa.estimateGas
+    //   .customSafeTransferFrom(ownerAddress, recipient, tokenId)
+    //   .catch(() => ethers.BigNumber.from("700000")); // 기본값 설정
 
     const tx = await nftCa.customSafeTransferFrom(
       ownerAddress,
       recipient,
-      tokenId
+      tokenId,
+      {
+        nonce: nonce, // 최신 nonce 사용
+        gasLimit: ethers.parseUnits("700000", 0),
+      }
     );
 
     const [receipt, tokenUri] = await Promise.all([
