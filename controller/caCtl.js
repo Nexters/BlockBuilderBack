@@ -127,59 +127,179 @@ const deployFTContract = async (req, res) => {
   }
 };
 
+// const mintNft = async (req, res) => {
+//   try {
+//     const { recipient } = req.body;
+//     if (!recipient) {
+//       return res
+//         .status(400)
+//         .json({ error: "Recipient and tokenUri are required" });
+//     }
+
+//     const nftCa = new ethers.Contract(
+//       process.env.NFTCA,
+//       nftCaData.abi,
+//       baseWallet
+//     );
+
+//     const tokenId = await nftCa.getUserTokenId();
+//     const ownerAddress = process.env.OWNER;
+//     const nonce = await baseProvider.getTransactionCount(
+//       baseWallet.address,
+//       "latest"
+//     );
+
+//     const tx = await nftCa.customSafeTransferFrom(
+//       ownerAddress,
+//       recipient,
+//       tokenId,
+//       {
+//         nonce: nonce, // 최신 nonce 사용
+//         gasLimit: ethers.parseUnits("700000", 0),
+//       }
+//     );
+
+//     const [receipt, tokenUri] = await Promise.all([
+//       tx.wait(),
+//       nftCa.tokenURI(tokenId),
+//     ]);
+
+//     const image_url = await lib.getImageUrlFromMapping(tokenUri);
+
+//     res.json({
+//       message: "NFT Minted Successfully",
+//       tokenUri: tokenUri,
+//       image_url: image_url,
+//       opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${tokenId}`,
+//       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
+//       tokenId: tokenId.toString(),
+//       transactionHash: receipt.hash,
+//     });
+//   } catch (error) {
+//     console.error("Error minting NFT:", error);
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
 const mintNft = async (req, res) => {
-  try {
-    const { recipient } = req.body;
-    if (!recipient) {
-      return res
-        .status(400)
-        .json({ error: "Recipient and tokenUri are required" });
-    }
+  let retryCount = 0;
+  const maxRetries = 3;
 
-    const nftCa = new ethers.Contract(
-      process.env.NFTCA,
-      nftCaData.abi,
-      baseWallet
-    );
-
-    const tokenId = await nftCa.getUserTokenId();
-    const ownerAddress = process.env.OWNER;
-    const nonce = await baseProvider.getTransactionCount(
-      baseWallet.address,
-      "latest"
-    );
-    // const gasLimit = await nftCa.estimateGas
-    //   .customSafeTransferFrom(ownerAddress, recipient, tokenId)
-    //   .catch(() => ethers.BigNumber.from("700000")); // 기본값 설정
-
-    const tx = await nftCa.customSafeTransferFrom(
-      ownerAddress,
-      recipient,
-      tokenId,
-      {
-        nonce: nonce, // 최신 nonce 사용
-        gasLimit: ethers.parseUnits("700000", 0),
+  const attemptMint = async () => {
+    try {
+      const { recipient } = req.body;
+      if (!recipient) {
+        return res
+          .status(400)
+          .json({ error: "Recipient and tokenUri are required" });
       }
-    );
 
-    const [receipt, tokenUri] = await Promise.all([
-      tx.wait(),
-      nftCa.tokenURI(tokenId),
-    ]);
+      const nftCa = new ethers.Contract(
+        process.env.NFTCA,
+        nftCaData.abi,
+        baseWallet
+      );
 
-    const image_url = await lib.getImageUrlFromMapping(tokenUri);
+      // 토큰 ID 조회는 트랜잭션 직전에 수행
+      const tokenId = await nftCa.getUserTokenId();
+      const ownerAddress = process.env.OWNER;
 
-    res.json({
-      message: "NFT Minted Successfully",
-      tokenUri: tokenUri,
-      image_url: image_url,
-      opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${tokenId}`,
-      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
-      tokenId: tokenId.toString(),
-      transactionHash: receipt.hash,
-    });
+      // 매번 최신 nonce를 가져옴
+      const nonce = await baseProvider.getTransactionCount(
+        baseWallet.address,
+        "pending" // 'latest' 대신 'pending'을 사용하여 대기 중인 트랜잭션도 고려
+      );
+
+      console.log(
+        `Attempting mint with nonce: ${nonce} for tokenId: ${tokenId}`
+      );
+
+      // 가스 제한 설정 (추정 가능한 경우 사용)
+      let gasLimit;
+      try {
+        gasLimit = await nftCa.customSafeTransferFrom.estimateGas(
+          ownerAddress,
+          recipient,
+          tokenId
+        );
+        // 여유분 20% 추가
+        gasLimit = (gasLimit * BigInt(120)) / BigInt(100);
+      } catch (error) {
+        console.log("Gas estimation failed, using default:", error.message);
+        gasLimit = ethers.parseUnits("700000", 0);
+      }
+
+      const tx = await nftCa.customSafeTransferFrom(
+        ownerAddress,
+        recipient,
+        tokenId,
+        {
+          nonce: nonce,
+          gasLimit: gasLimit,
+          // 트랜잭션이 더 빨리 채굴되도록 가스 가격 약간 높게 설정
+          gasPrice:
+            ((await baseProvider.getFeeData()).gasPrice * BigInt(110)) /
+            BigInt(100),
+        }
+      );
+
+      console.log(`Transaction sent: ${tx.hash} with nonce ${nonce}`);
+
+      // 타임아웃 추가
+      const receipt = await Promise.race([
+        tx.wait(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Transaction timeout")), 60000)
+        ),
+      ]);
+
+      const tokenUri = await nftCa.tokenURI(tokenId);
+      const image_url = await lib.getImageUrlFromMapping(tokenUri);
+
+      return {
+        success: true,
+        data: {
+          message: "NFT Minted Successfully",
+          tokenUri: tokenUri,
+          image_url: image_url,
+          opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${tokenId}`,
+          receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
+          tokenId: tokenId.toString(),
+          transactionHash: receipt.hash,
+        },
+      };
+    } catch (error) {
+      // 에러 분석 및 재시도 조건 결정
+      if (
+        error.message.includes("nonce too low") ||
+        error.message.includes("nonce has already been used") ||
+        error.message.includes("replacement transaction underpriced") ||
+        error.message.includes("execution reverted")
+      ) {
+        if (retryCount < maxRetries) {
+          retryCount++;
+          console.log(
+            `Retrying mint (${retryCount}/${maxRetries}) due to: ${error.message}`
+          );
+          // 재시도 전 짧은 지연
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+          return attemptMint();
+        }
+      }
+      return { success: false, error };
+    }
+  };
+
+  try {
+    const result = await attemptMint();
+    if (result.success) {
+      res.json(result.data);
+    } else {
+      console.error("Error minting NFT:", result.error);
+      res.status(500).json({ error: result.error.message });
+    }
   } catch (error) {
-    console.error("Error minting NFT:", error);
+    console.error("Error in mint process:", error);
     res.status(500).json({ error: error.message });
   }
 };
