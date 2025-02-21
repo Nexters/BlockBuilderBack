@@ -145,7 +145,7 @@ const mintNft = async (req, res) => {
     const ownerAddress = process.env.OWNER;
 
     // 재시도 함수 정의
-    const executeTransaction = async (retryCount = 0, maxRetries = 3) => {
+    const executeTransaction = async (retryCount = 0, maxRetries = 10) => {
       try {
         // 매번 최신 nonce 가져오기
         let nonce = await baseProvider.getTransactionCount(
