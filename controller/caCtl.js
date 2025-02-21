@@ -183,7 +183,7 @@ const deployFTContract = async (req, res) => {
 
 const mintNft = async (req, res) => {
   let retryCount = 0;
-  const maxRetries = 3;
+  const maxRetries = 10;
 
   const attemptMint = async () => {
     try {
@@ -215,20 +215,23 @@ const mintNft = async (req, res) => {
       );
 
       // 가스 제한 설정 (추정 가능한 경우 사용)
-      let gasLimit;
-      try {
-        gasLimit = await nftCa.customSafeTransferFrom.estimateGas(
-          ownerAddress,
-          recipient,
-          tokenId
-        );
-        // 여유분 20% 추가
-        gasLimit = (gasLimit * BigInt(120)) / BigInt(100);
-      } catch (error) {
-        console.log("Gas estimation failed, using default:", error.message);
-        gasLimit = ethers.parseUnits("700000", 0);
-      }
-
+      // let gasLimit;
+      // try {
+      //   // gasLimit = await nftCa.customSafeTransferFrom.estimateGas(
+      //   //   ownerAddress,
+      //   //   recipient,
+      //   //   tokenId
+      //   // );
+      //   // 여유분 20% 추가
+      //   //gasLimit = (gasLimit * BigInt(150)) / BigInt(100);
+      //   console.log("gasLimit", gasLimit);
+      //   gasLimit = ethers.parseUnits("1500000", 0);
+      //   //  console.log("gasLimit2", gasLimit2);
+      // } catch (error) {
+      //   console.log("Gas estimation failed, using default:", error.message);
+      //   gasLimit = ethers.parseUnits("7000000", 0);
+      // }
+      let gasLimit = ethers.parseUnits("1500000", 0);
       const tx = await nftCa.customSafeTransferFrom(
         ownerAddress,
         recipient,
