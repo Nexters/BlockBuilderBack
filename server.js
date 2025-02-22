@@ -6,8 +6,12 @@ const newSvc = require("./services/newsSvc");
 const lib = require("./util/lib");
 const path = require("path");
 const fs = require("fs");
+const redis = require("./util/redisClient"); // Redis 클라이언트 임포트
+const caController = require("./controller/caCtl");
+
 app.use(express.static("public"));
 const cors = require("cors");
+
 app.use(
   cors({
     origin: "https://www.for-the-block.com", // 허용할 도메인
@@ -29,8 +33,11 @@ if (!fs.existsSync(uploadsDir)) {
 newSvc.scheduleDataFetching();
 app.use(require("./src/routes"));
 
-//lib.prefetchIpfsMapping().catch(console.error);
+// caController.processMintQueue().catch((err) => {
+//   console.error("[MintWorker] 워커 실행 중 에러 발생:", err);
+// });
 
+caController.queueWorkerLoop();
 app.listen(port, () => {
   console.log(`Express Server running on http://localhost:${port}`);
 });
