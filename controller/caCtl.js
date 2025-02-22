@@ -7,7 +7,6 @@ const util = require("../util/util");
 const caSvc = require("../services/caSvc");
 const pool = require("../src/config/database");
 const lib = require("../util/lib");
-const redis = require("../util/redisClient"); // 경로 확인
 
 const inMemoryQueue = []; // { jobId, recipient, resolve, reject } 형태
 let currentActiveCount = 0;

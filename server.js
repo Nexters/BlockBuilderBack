@@ -6,7 +6,7 @@ const newSvc = require("./services/newsSvc");
 const lib = require("./util/lib");
 const path = require("path");
 const fs = require("fs");
-const redis = require("./util/redisClient"); // Redis 클라이언트 임포트
+
 const caController = require("./controller/caCtl");
 
 app.use(express.static("public"));

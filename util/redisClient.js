@@ -1,4 +1,3 @@
-// redisClient.js
 const Redis = require("ioredis");
 
 // Redis 클라이언트를 Promise 기반으로 변경
