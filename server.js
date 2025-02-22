@@ -37,7 +37,7 @@ app.use(require("./src/routes"));
 //   console.error("[MintWorker] 워커 실행 중 에러 발생:", err);
 // });
 
-caController.queueWorkerLoop();
+//caController.queueWorkerLoop();
 app.listen(port, () => {
   console.log(`Express Server running on http://localhost:${port}`);
 });

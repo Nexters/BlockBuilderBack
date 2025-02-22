@@ -33,9 +33,6 @@ const ftCaData = JSON.parse(
   )
 );
 
-// 큐 이름
-const MINT_QUEUE = "mint_queue";
-
 const baseProvider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
 const baseWallet = new ethers.Wallet(process.env.PRIVATE_KEY, baseProvider);
 
@@ -221,222 +218,222 @@ const deployFTContract = async (req, res) => {
   }
 };
 
-// const mintNft = async (req, res) => {
-//   try {
-//     const { recipient } = req.body;
-//     if (!recipient) {
-//       return res
-//         .status(400)
-//         .json({ error: "Recipient and tokenUri are required" });
-//     }
-
-//     const nftCa = new ethers.Contract(
-//       process.env.NFTCA,
-//       nftCaData.abi,
-//       baseWallet
-//     );
-
-//     const tokenId = await nftCa.getUserTokenId();
-//     const ownerAddress = process.env.OWNER;
-
-//     // 재시도 함수 정의
-//     const executeTransaction = async (retryCount = 0, maxRetries = 10) => {
-//       try {
-//         // 매번 최신 nonce 가져오기
-//         let nonce = await baseProvider.getTransactionCount(
-//           baseWallet.address,
-//           "pending"
-//         );
-
-//         const tx = await nftCa.customSafeTransferFrom(
-//           ownerAddress,
-//           recipient,
-//           tokenId,
-//           {
-//             nonce: nonce,
-//             gasLimit: ethers.parseUnits("10000000", 0),
-//           }
-//         );
-
-//         return await tx.wait();
-//       } catch (error) {
-//         // 재시도 횟수 초과 시 에러 발생
-//         if (retryCount >= maxRetries) {
-//           throw new Error(
-//             `Transaction failed after ${maxRetries} attempts: ${error.message}`
-//           );
-//         }
-
-//         // 실패 원인에 따라 대기 시간 조정 (exponential backoff)
-//         const waitTime = 1000 * Math.pow(2, retryCount);
-//         console.log(
-//           `Transaction attempt ${
-//             retryCount + 1
-//           } failed. Retrying in ${waitTime}ms...`
-//         );
-//         await new Promise((resolve) => setTimeout(resolve, waitTime));
-
-//         // 재귀적으로 재시도
-//         return executeTransaction(retryCount + 1, maxRetries);
-//       }
-//     };
-
-//     // 트랜잭션 실행 (최대 3번 재시도)
-//     const receipt = await executeTransaction();
-//     const tokenUri = await nftCa.tokenURI(tokenId);
-//     const image_url = await lib.getImageUrlFromMapping(tokenUri);
-
-//     res.json({
-//       message: "NFT Minted Successfully",
-//       tokenUri: tokenUri,
-//       image_url: image_url,
-//       opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${tokenId}`,
-//       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
-//       tokenId: tokenId.toString(),
-//       transactionHash: receipt.hash,
-//     });
-//   } catch (error) {
-//     console.error("Error minting NFT:", error);
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
 const mintNft = async (req, res) => {
   try {
     const { recipient } = req.body;
     if (!recipient) {
-      return res.status(400).json({ error: "Recipient is required" });
+      return res
+        .status(400)
+        .json({ error: "Recipient and tokenUri are required" });
     }
 
-    // 1) jobId 생성
-    const jobId = uuidv4();
-    console.log(`[mintNft] New jobId=${jobId}, recipient=${recipient}`);
+    const nftCa = new ethers.Contract(
+      process.env.NFTCA,
+      nftCaData.abi,
+      baseWallet
+    );
 
-    // 2) Promise 생성 → 큐에 넣을 콜백(resolve, reject)
-    const txPromise = new Promise((resolve, reject) => {
-      // 큐에 넣을 데이터
-      inMemoryQueue.push({
-        jobId,
-        recipient,
-        resolve,
-        reject,
-      });
-    });
+    const tokenId = await nftCa.getUserTokenId();
+    const ownerAddress = process.env.OWNER;
 
-    // 3) Promise 결과를 기다렸다가 응답
-    const txResult = await txPromise;
+    // 재시도 함수 정의
+    const executeTransaction = async (retryCount = 0, maxRetries = 10) => {
+      try {
+        // 매번 최신 nonce 가져오기
+        let nonce = await baseProvider.getTransactionCount(
+          baseWallet.address,
+          "pending"
+        );
 
-    // 여기서 최종 응답
-    return res.json({
+        const tx = await nftCa.customSafeTransferFrom(
+          ownerAddress,
+          recipient,
+          tokenId,
+          {
+            nonce: nonce,
+            gasLimit: ethers.parseUnits("10000000", 0),
+          }
+        );
+
+        return await tx.wait();
+      } catch (error) {
+        // 재시도 횟수 초과 시 에러 발생
+        if (retryCount >= maxRetries) {
+          throw new Error(
+            `Transaction failed after ${maxRetries} attempts: ${error.message}`
+          );
+        }
+
+        // 실패 원인에 따라 대기 시간 조정 (exponential backoff)
+        const waitTime = 1000 * Math.pow(2, retryCount);
+        console.log(
+          `Transaction attempt ${
+            retryCount + 1
+          } failed. Retrying in ${waitTime}ms...`
+        );
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+
+        // 재귀적으로 재시도
+        return executeTransaction(retryCount + 1, maxRetries);
+      }
+    };
+
+    // 트랜잭션 실행 (최대 3번 재시도)
+    const receipt = await executeTransaction();
+    const tokenUri = await nftCa.tokenURI(tokenId);
+    const image_url = await lib.getImageUrlFromMapping(tokenUri);
+
+    res.json({
       message: "NFT Minted Successfully",
-      tokenId: txResult.tokenId,
-      transactionHash: txResult.transactionHash,
-      tokenUri: txResult.tokenUri,
-      image_url: txResult.image_url,
-      opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${txResult.tokenId}`,
-      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${txResult.transactionHash}`,
+      tokenUri: tokenUri,
+      image_url: image_url,
+      opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${tokenId}`,
+      receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${receipt.hash}`,
+      tokenId: tokenId.toString(),
+      transactionHash: receipt.hash,
     });
-  } catch (err) {
-    console.error("[mintNft] Error:", err);
-    return res.status(500).json({ error: err.message });
+  } catch (error) {
+    console.error("Error minting NFT:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-// ========================== 민팅 트랜잭션 실행 함수 ==========================
-async function executeTransaction(recipient) {
-  // Ethers 컨트랙트
-  const nftCa = new ethers.Contract(
-    process.env.NFTCA,
-    nftCaData.abi,
-    baseWallet
-  );
+// const mintNft = async (req, res) => {
+//   try {
+//     const { recipient } = req.body;
+//     if (!recipient) {
+//       return res.status(400).json({ error: "Recipient is required" });
+//     }
 
-  // 재시도 로직
-  async function tryTx(retryCount = 0, maxRetries = 3) {
-    try {
-      // 매번 최신 nonce 가져오기
-      const nonce = await baseProvider.getTransactionCount(
-        baseWallet.address,
-        "pending"
-      );
-      // tokenId 조회
-      const tokenId = await nftCa.getUserTokenId();
-      // 실제 트랜잭션
-      const tx = await nftCa.customSafeTransferFrom(
-        process.env.OWNER,
-        recipient,
-        tokenId,
-        {
-          nonce,
-          gasLimit: ethers.parseUnits("10000000", 0),
-        }
-      );
-      // 대기
-      const receipt = await tx.wait();
+//     // 1) jobId 생성
+//     const jobId = uuidv4();
+//     console.log(`[mintNft] New jobId=${jobId}, recipient=${recipient}`);
 
-      // tokenURI + image_url
-      const tokenUri = await nftCa.tokenURI(tokenId);
-      const image_url = await lib.getImageUrlFromMapping(tokenUri);
+//     // 2) Promise 생성 → 큐에 넣을 콜백(resolve, reject)
+//     const txPromise = new Promise((resolve, reject) => {
+//       // 큐에 넣을 데이터
+//       inMemoryQueue.push({
+//         jobId,
+//         recipient,
+//         resolve,
+//         reject,
+//       });
+//     });
 
-      return {
-        tokenId: tokenId.toString(),
-        transactionHash: receipt.transactionHash,
-        tokenUri,
-        image_url,
-      };
-    } catch (err) {
-      if (retryCount >= maxRetries) {
-        throw new Error(
-          `Transaction failed after ${maxRetries} attempts: ${err.message}`
-        );
-      }
-      const waitTime = 1000 * Math.pow(2, retryCount);
-      console.log(
-        `[executeTransaction] Retry #${retryCount + 1} after ${waitTime}ms`
-      );
-      await new Promise((resolve) => setTimeout(resolve, waitTime));
-      return tryTx(retryCount + 1, maxRetries);
-    }
-  }
+//     // 3) Promise 결과를 기다렸다가 응답
+//     const txResult = await txPromise;
 
-  return tryTx();
-}
+//     // 여기서 최종 응답
+//     return res.json({
+//       message: "NFT Minted Successfully",
+//       tokenId: txResult.tokenId,
+//       transactionHash: txResult.transactionHash,
+//       tokenUri: txResult.tokenUri,
+//       image_url: txResult.image_url,
+//       opensea: `https://testnets.opensea.io/assets/base_sepolia/${process.env.NFTCA}/${txResult.tokenId}`,
+//       receipt_link: `${process.env.SEPOLIA_ETH_SCAN}${txResult.transactionHash}`,
+//     });
+//   } catch (err) {
+//     console.error("[mintNft] Error:", err);
+//     return res.status(500).json({ error: err.message });
+//   }
+// };
 
-// ========================== 큐 처리(Worker) ==========================
-//  - currentActiveCount < MAX_CONCURRENCY면 새 작업 실행
-//  - 실행할 때는 currentActiveCount++
-//  - 끝나면 currentActiveCount-- 하고 다음 작업
-async function queueWorkerLoop() {
-  while (true) {
-    // 1) 현재 실행 가능한지 체크
-    if (currentActiveCount < MAX_CONCURRENCY && inMemoryQueue.length > 0) {
-      // 큐에서 하나 꺼냄
-      const nextJob = inMemoryQueue.shift(); // { jobId, recipient, resolve, reject }
-      currentActiveCount++;
-      console.log(
-        `>>> [Worker] Start jobId=${nextJob.jobId}. Active=${currentActiveCount}`
-      );
+// // ========================== 민팅 트랜잭션 실행 함수 ==========================
+// async function executeTransaction(recipient) {
+//   // Ethers 컨트랙트
+//   const nftCa = new ethers.Contract(
+//     process.env.NFTCA,
+//     nftCaData.abi,
+//     baseWallet
+//   );
 
-      // 2) 실제 트랜잭션 실행
-      executeTransaction(nextJob.recipient)
-        .then((txResult) => {
-          console.log(`>>> [Worker] jobId=${nextJob.jobId} done.`);
-          // 요청 쪽에서 응답을 받기 위해 resolve(txResult)
-          nextJob.resolve(txResult);
-        })
-        .catch((err) => {
-          console.error(`[Worker] jobId=${nextJob.jobId} failed:`, err.message);
-          nextJob.reject(err);
-        })
-        .finally(() => {
-          currentActiveCount--;
-        });
-    } else {
-      // 실행할 수 없으면 잠시 대기 후 다시 루프
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    }
-  }
-}
+//   // 재시도 로직
+//   async function tryTx(retryCount = 0, maxRetries = 3) {
+//     try {
+//       // 매번 최신 nonce 가져오기
+//       const nonce = await baseProvider.getTransactionCount(
+//         baseWallet.address,
+//         "pending"
+//       );
+//       // tokenId 조회
+//       const tokenId = await nftCa.getUserTokenId();
+//       // 실제 트랜잭션
+//       const tx = await nftCa.customSafeTransferFrom(
+//         process.env.OWNER,
+//         recipient,
+//         tokenId,
+//         {
+//           nonce,
+//           gasLimit: ethers.parseUnits("10000000", 0),
+//         }
+//       );
+//       // 대기
+//       const receipt = await tx.wait();
+
+//       // tokenURI + image_url
+//       const tokenUri = await nftCa.tokenURI(tokenId);
+//       const image_url = await lib.getImageUrlFromMapping(tokenUri);
+
+//       return {
+//         tokenId: tokenId.toString(),
+//         transactionHash: receipt.transactionHash,
+//         tokenUri,
+//         image_url,
+//       };
+//     } catch (err) {
+//       if (retryCount >= maxRetries) {
+//         throw new Error(
+//           `Transaction failed after ${maxRetries} attempts: ${err.message}`
+//         );
+//       }
+//       const waitTime = 1000 * Math.pow(2, retryCount);
+//       console.log(
+//         `[executeTransaction] Retry #${retryCount + 1} after ${waitTime}ms`
+//       );
+//       await new Promise((resolve) => setTimeout(resolve, waitTime));
+//       return tryTx(retryCount + 1, maxRetries);
+//     }
+//   }
+
+//   return tryTx();
+// }
+
+// // ========================== 큐 처리(Worker) ==========================
+// //  - currentActiveCount < MAX_CONCURRENCY면 새 작업 실행
+// //  - 실행할 때는 currentActiveCount++
+// //  - 끝나면 currentActiveCount-- 하고 다음 작업
+// async function queueWorkerLoop() {
+//   while (true) {
+//     // 1) 현재 실행 가능한지 체크
+//     if (currentActiveCount < MAX_CONCURRENCY && inMemoryQueue.length > 0) {
+//       // 큐에서 하나 꺼냄
+//       const nextJob = inMemoryQueue.shift(); // { jobId, recipient, resolve, reject }
+//       currentActiveCount++;
+//       console.log(
+//         `>>> [Worker] Start jobId=${nextJob.jobId}. Active=${currentActiveCount}`
+//       );
+
+//       // 2) 실제 트랜잭션 실행
+//       executeTransaction(nextJob.recipient)
+//         .then((txResult) => {
+//           console.log(`>>> [Worker] jobId=${nextJob.jobId} done.`);
+//           // 요청 쪽에서 응답을 받기 위해 resolve(txResult)
+//           nextJob.resolve(txResult);
+//         })
+//         .catch((err) => {
+//           console.error(`[Worker] jobId=${nextJob.jobId} failed:`, err.message);
+//           nextJob.reject(err);
+//         })
+//         .finally(() => {
+//           currentActiveCount--;
+//         });
+//     } else {
+//       // 실행할 수 없으면 잠시 대기 후 다시 루프
+//       await new Promise((resolve) => setTimeout(resolve, 200));
+//     }
+//   }
+// }
 
 const createTopic = async (req, res) => {
   let connection;
@@ -574,7 +571,7 @@ module.exports = {
   getTotalVote,
   getUserVote,
   deployFTContract,
-  queueWorkerLoop,
+  //queueWorkerLoop,
   // processMintQueue,
   // processMintTransaction,
 };
