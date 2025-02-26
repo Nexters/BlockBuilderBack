@@ -55,10 +55,14 @@ if (process.env.SERVER_MODE == "dev") {
         )
         .toString(),
     };
+    app.listen(3000, () => {
+      console.log(`HTTP server running on 3000`);
+    });
+
     HTTPS.createServer(option, app).listen(port, () => {
       console.log(`[HTTPS] Server is runnig on port ${port}`);
     });
   } catch (error) {
-    console.log("[HTTPS] HTTPS 오류가 발생하였습니다.");
+    console.log("[HTTPS] HTTPS 오류가 발생하였습니다.", error);
   }
 }
