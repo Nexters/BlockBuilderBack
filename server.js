@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.SERVER_PORT;
 const newSvc = require("./services/newsSvc");
 const lib = require("./util/lib");
 const path = require("path");
