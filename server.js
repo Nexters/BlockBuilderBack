@@ -49,7 +49,7 @@ if (process.env.SERVER_MODE == "dev") {
         .toString(),
       cert: fs
         .readFileSync(
-          path.resolve(process.cwd(), `${process.env.SSL_PATH}cert.pem`),
+          path.resolve(process.cwd(), `${process.env.SSL_PATH}/cert.pem`),
           "utf8"
         )
         .toString(),
