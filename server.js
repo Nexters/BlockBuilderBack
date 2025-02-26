@@ -33,11 +33,31 @@ if (!fs.existsSync(uploadsDir)) {
 newSvc.scheduleDataFetching();
 app.use(require("./src/routes"));
 
-// caController.processMintQueue().catch((err) => {
-//   console.error("[MintWorker] 워커 실행 중 에러 발생:", err);
-// });
-
-//caController.queueWorkerLoop();
-app.listen(port, () => {
-  console.log(`Express Server running on http://localhost:${port}`);
-});
+if (process.env.SERVER_MODE == "dev") {
+  app.listen(port, () => {
+    console.log(`Express Server running on http://localhost:${port}`);
+  });
+} else {
+  try {
+    const option = {
+      ca: fs.readFileSync(`${process.env.SSL_PATH}/fullchain.pem`),
+      key: fs
+        .readFileSync(
+          path.resolve(process.cwd(), `${process.env.SSL_PATH}/privkey.pem`),
+          "utf8"
+        )
+        .toString(),
+      cert: fs
+        .readFileSync(
+          path.resolve(process.cwd(), `${process.env.SSL_PATH}cert.pem`),
+          "utf8"
+        )
+        .toString(),
+    };
+    HTTPS.createServer(option, app).listen(port, () => {
+      console.log(`[HTTPS] Server is runnig on port ${port}`);
+    });
+  } catch (error) {
+    console.log("[HTTPS] HTTPS 오류가 발생하였습니다.");
+  }
+}
