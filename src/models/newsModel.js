@@ -36,7 +36,7 @@ async function getMeeupUrl(connection, page, size) {
       SELECT *, (SELECT COUNT(*) FROM feed_items WHERE organization_code = '04' ) AS total
       FROM feed_items
       WHERE organization_code = '04'
-      ORDER BY id DESC
+      ORDER BY end_date DESC
       LIMIT ? OFFSET ?`;
 
   const values = [limit, offset];
@@ -52,7 +52,7 @@ async function getHackathonUrl(connection, page, size) {
         SELECT *, (SELECT COUNT(*) FROM feed_items WHERE network = 00 and organization_code = 05 ) AS total
         FROM feed_items
         WHERE network = 00 and organization_code = 05
-        ORDER BY id DESC
+        ORDER BY end_date DESC
         LIMIT ? OFFSET ?`;
 
   const values = [limit, offset];
