@@ -31,7 +31,9 @@ const pinataUpload = async (req, res) => {
 const fileToIpfsUpload = async (req, res) => {
   try {
     const fileData = req.file;
+    console.log("fileData", fileData);
     const data = await fileService.fileToIpfsUploadService(fileData);
+    console.log("data", data);
     res.status(200).json(data);
   } catch (error) {
     res.status(500).send(error.message);

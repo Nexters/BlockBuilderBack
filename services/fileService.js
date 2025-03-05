@@ -40,8 +40,11 @@ const fileToIpfsUploadService = async (fileData) => {
     if (!fs.existsSync(filePath)) {
       throw new Error(`File does not exist at path: ${filePath}`);
     }
+    console.log("filePath", filePath);
     const filePathData = fs.readFileSync(path.join(__dirname, "../", filePath));
+    console.log("filePathData", filePathData);
     const ipfsUri = await lib.ipfsFileUpload(filePathData);
+    console.log("ipfsUri", ipfsUri);
     return ipfsUri;
   } catch (e) {
     console.error("error", e);
